@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Quicksand:wght@400;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
 
 <style>
-
 body{
 margin:0;
 height:100vh;
@@ -16,39 +15,77 @@ display:flex;
 justify-content:center;
 align-items:center;
 font-family:'Quicksand',sans-serif;
-transition:background 2s ease;
 overflow:hidden;
+transition:background 2s ease;
 }
 
-/* POLVO ONÍRICO */
-.particula{
+/* AURORA SUAVE */
+body::before{
+content:"";
 position:absolute;
-width:4px;
-height:4px;
-background:rgba(255,255,255,0.6);
-border-radius:50%;
-animation:flotar 15s linear infinite;
+width:200%;
+height:200%;
+background:radial-gradient(circle at 30% 30%,rgba(255,255,255,0.15),transparent 40%),
+radial-gradient(circle at 70% 70%,rgba(255,255,255,0.12),transparent 40%);
+animation:aurora 25s linear infinite;
+z-index:0;
 }
 
-@keyframes flotar{
-from{transform:translateY(100vh);}
-to{transform:translateY(-10vh);}
+@keyframes aurora{
+0%{transform:translate(-10%,-10%) rotate(0deg);}
+50%{transform:translate(-5%,-5%) rotate(180deg);}
+100%{transform:translate(-10%,-10%) rotate(360deg);}
 }
 
-/* FLORES */
-.flor{
-position:absolute;
+/* CONTENEDOR */
+.container{
+position:relative;
+z-index:2;
+background:rgba(255,255,255,0.85);
+backdrop-filter:blur(20px);
+padding:45px;
+border-radius:35px;
+text-align:center;
+box-shadow:0 20px 50px rgba(0,0,0,0.15);
+max-width:420px;
+width:90%;
+}
+
+/* TÍTULO */
+h1{
+font-family:'Playfair Display',serif;
+font-size:26px;
+margin-bottom:8px;
+}
+
+#contador{
+font-family:'Cormorant Garamond',serif;
+font-size:15px;
+margin-bottom:12px;
+opacity:0.8;
+}
+
+#climaIcono{
+font-size:50px;
+margin:10px 0;
+}
+
+.burbuja{
+margin-top:15px;
+padding:15px 20px;
+border-radius:30px;
+font-family:'Cormorant Garamond',serif;
 font-size:18px;
-animation:caer 12s linear infinite;
-opacity:0.7;
+line-height:1.5em;
+transition:all 0.4s ease;
 }
 
-@keyframes caer{
-from{transform:translateY(-10vh) rotate(0deg);}
-to{transform:translateY(110vh) rotate(360deg);}
-}
+/* FORMAS SEGÚN CLIMA */
+.soleado{background:rgba(255,255,255,0.6);border-radius:40px;}
+.nublado{background:rgba(230,230,255,0.6);border-radius:25px 40px 40px 25px;}
+.lluvia{background:rgba(220,230,255,0.6);border-radius:40px 40px 25px 40px;}
+.frio{background:rgba(240,255,255,0.6);border-radius:50px;}
 
-/* ESTRELLAS */
 .estrella{
 position:absolute;
 width:2px;
@@ -64,49 +101,16 @@ from{opacity:0.3;}
 to{opacity:1;}
 }
 
-/* CONTENEDOR */
-.container{
-background:rgba(255,255,255,0.85);
-backdrop-filter:blur(20px);
-padding:50px;
-border-radius:40px;
-text-align:center;
-box-shadow:0 20px 50px rgba(0,0,0,0.15);
-max-width:420px;
-width:90%;
-z-index:2;
-}
-
-/* TÍTULO */
-h1{
-font-family:'Playfair Display',serif;
-font-size:26px;
-margin-bottom:5px;
-}
-
-/* CONTADOR */
-#contador{
-font-family:'Cormorant Garamond',serif;
+.flor{
+position:absolute;
 font-size:16px;
-opacity:0.8;
-margin-bottom:15px;
+animation:caer 12s linear infinite;
+opacity:0.6;
 }
 
-/* BURBUJA MENSAJE */
-.burbuja{
-margin-top:15px;
-padding:15px 20px;
-border-radius:25px;
-background:rgba(255,255,255,0.6);
-font-family:'Cormorant Garamond',serif;
-font-size:18px;
-line-height:1.5em;
-transition:opacity 0.5s ease;
-}
-
-#climaIcono{
-font-size:50px;
-margin:10px 0;
+@keyframes caer{
+from{transform:translateY(-10vh) rotate(0deg);}
+to{transform:translateY(110vh) rotate(360deg);}
 }
 
 </style>
@@ -118,41 +122,27 @@ margin:10px 0;
 <h1>Shaiel 🌷</h1>
 <div id="contador"></div>
 <div id="ciudad"></div>
-<div id="climaIcono">☀️</div>
+<div id="climaIcono"></div>
 <div id="temperatura"></div>
-<div class="burbuja" id="mensaje"></div>
+<div id="mensaje" class="burbuja"></div>
 </div>
 
 <script>
 
-// ===== CONTADOR =====
+// CONTADOR
 const inicio=new Date("2026-01-30");
-
 function actualizarContador(){
 const hoy=new Date();
 const diff=hoy-inicio;
-
 const dias=Math.floor(diff/(1000*60*60*24));
 const meses=Math.floor(dias/30.44);
 const años=Math.floor(meses/12);
-
 document.getElementById("contador").textContent=
 `${años} años • ${meses%12} meses • ${dias} días contigo`;
 }
 actualizarContador();
 
-
-// ===== POLVO BASE =====
-for(let i=0;i<25;i++){
-let p=document.createElement("div");
-p.className="particula";
-p.style.left=Math.random()*100+"vw";
-p.style.animationDuration=(10+Math.random()*10)+"s";
-document.body.appendChild(p);
-}
-
-
-// ===== DETECTAR CIUDAD =====
+// DETECTAR CIUDAD
 fetch("https://ipapi.co/json/")
 .then(res=>res.json())
 .then(data=>{
@@ -160,111 +150,91 @@ document.getElementById("ciudad").textContent="📍 "+data.city;
 obtenerClima(data.latitude,data.longitude);
 });
 
+let mensajes=[];
+let claseActual="";
 
-// ===== MENSAJES POR CLIMA =====
-let mensajesActuales=[];
-
-function rotarMensajes(){
-const mensaje=document.getElementById("mensaje");
-let index=0;
-
+function rotar(){
+let i=0;
+const el=document.getElementById("mensaje");
 function cambiar(){
-mensaje.style.opacity=0;
+el.style.opacity=0;
 setTimeout(()=>{
-mensaje.textContent=mensajesActuales[index];
-mensaje.style.opacity=1;
-index=(index+1)%mensajesActuales.length;
-},400);
+el.textContent=mensajes[i];
+el.style.opacity=1;
+i=(i+1)%mensajes.length;
+},300);
 }
-
 cambiar();
 setInterval(cambiar,30000);
 }
 
-
-// ===== CLIMA REAL =====
 function obtenerClima(lat,lon){
 fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
 .then(res=>res.json())
 .then(data=>{
 const temp=Math.round(data.current_weather.temperature);
 const code=data.current_weather.weathercode;
-
 document.getElementById("temperatura").textContent=temp+"°C";
 
 document.querySelectorAll(".flor,.estrella").forEach(e=>e.remove());
 
 let fondo="";
 let icono="";
-
-
-// ☀️ SOLEADO
+let clase="";
 if(code==0){
 icono="☀️";
+clase="soleado";
 fondo="linear-gradient(135deg,#ffe6f7,#fff1b8)";
-
-mensajesActuales=[
-"Soleado… como tu energía cuando sonríes.",
-"Shaiel, tu nombre brilla más que el sol.",
-"Hoy el cielo está claro… como lo que siento por vos."
+mensajes=[
+"Soleado… como tu energía.",
+"Tu nombre brilla más que el sol.",
+"Hoy todo se siente ligero contigo."
 ];
-
-// flores suaves
 for(let i=0;i<10;i++){
 let flor=document.createElement("div");
 flor.className="flor";
 flor.textContent="🌸";
 flor.style.left=Math.random()*100+"vw";
-flor.style.animationDuration=(8+Math.random()*5)+"s";
 document.body.appendChild(flor);
 }
 }
-
-
-// ☁️ NUBLADO
 else if(code>=1 && code<=3){
 icono="☁️";
+clase="nublado";
 fondo="linear-gradient(135deg,#e8eafc,#f3e5f5)";
-
-mensajesActuales=[
-"Nublado… pero mi amor por vos no se oscurece.",
-"Hay días grises que igual llevan tu nombre.",
-"Shaiel, incluso en lo profundo, te elijo."
+mensajes=[
+"Aunque el cielo esté gris, te elijo.",
+"Hay profundidad en los días suaves.",
+"Shaiel, incluso en silencio, estás."
 ];
 }
-
-
-// 🌧️ LLUVIA
 else if(code>=61 && code<=67){
 icono="🌧️";
+clase="lluvia";
 fondo="linear-gradient(135deg,#d6e4ff,#e0c3fc)";
-
-mensajesActuales=[
-"Lluvia… y yo siendo tu refugio.",
-"Si el mundo pesa, yo te sostengo.",
-"Shaiel, estoy incluso cuando cae todo."
+mensajes=[
+"Si llueve, soy tu refugio.",
+"Estoy incluso cuando todo cae.",
+"Mi presencia es constante."
 ];
 }
-
-
-// ❄️ FRÍO
 else{
 icono="❄️";
+clase="frio";
 fondo="linear-gradient(135deg,#e0f7fa,#e1bee7)";
-
-mensajesActuales=[
-"Frío… pero mi cuidado es cálido.",
-"Te envolvería en todo lo que siento.",
-"Shaiel, mi suavidad es para vos."
+mensajes=[
+"Frío afuera, suavidad adentro.",
+"Te envolvería con calma.",
+"Mi cuidado es cálido."
 ];
 }
-
 
 document.body.style.background=fondo;
 document.getElementById("climaIcono").textContent=icono;
 
+const mensajeEl=document.getElementById("mensaje");
+mensajeEl.className="burbuja "+clase;
 
-// ESTRELLAS SOLO NOCHE
 const hora=new Date().getHours();
 if(hora>=20 || hora<6){
 for(let i=0;i<40;i++){
@@ -276,8 +246,7 @@ document.body.appendChild(star);
 }
 }
 
-rotarMensajes();
-
+rotar();
 });
 }
 
