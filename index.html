@@ -268,6 +268,116 @@ function toggleMusica(){
 const m=document.getElementById("musica");
 m.paused?m.play():m.pause();
 }
+<script>
+
+// ===== INTRO SUAVE =====
+function entrar(){
+document.getElementById("inicio").style.opacity="0";
+setTimeout(()=>{
+document.getElementById("inicio").style.display="none";
+},1000);
+}
+
+// ===== CONTADOR =====
+const fechaInicio=new Date("2026-01-30");
+function actualizarContador(){
+const hoy=new Date();
+const dias=Math.floor((hoy-fechaInicio)/(1000*60*60*24));
+document.getElementById("widget").textContent=
+`💗 ${dias} días juntos`;
+}
+actualizarContador();
+
+// ===== MENSAJES SEGÚN HORA =====
+function mensajeSegunHora(){
+const hora=new Date().getHours();
+let mensaje="";
+
+if(hora>=6 && hora<12){
+mensaje="Buenos días… ojalá despertarme siempre a tu lado ☀️";
+document.body.style.background="linear-gradient(135deg,#ffd6f5,#d6f0ff)";
+}
+else if(hora>=12 && hora<19){
+mensaje="Espero que tu día esté siendo tan lindo como tu sonrisa 🌸";
+document.body.style.background="linear-gradient(135deg,#ffe4f7,#cfe9ff)";
+}
+else{
+mensaje="Si el día fue pesado, yo estoy acá para vos 🌙";
+document.body.style.background="linear-gradient(135deg,#1e3c72,#2a5298)";
+}
+
+document.getElementById("mensaje").textContent=mensaje;
+}
+
+mensajeSegunHora();
+
+// ===== CIUDAD AUTOMÁTICA =====
+fetch("https://ipapi.co/json/")
+.then(res=>res.json())
+.then(data=>{
+document.getElementById("ciudad").textContent=
+`Estés donde estés (${data.city}), estoy con vos 💞`;
+})
+.catch(()=>{
+document.getElementById("ciudad").textContent=
+"Estés donde estés, estoy con vos 💞";
+});
+
+// ===== CLIMA SIMULADO (EMOCIONAL) =====
+const estadosClima=["soleado","nublado","lluvia","frío"];
+const climaActual=estadosClima[Math.floor(Math.random()*estadosClima.length)];
+
+let mensajeClima="";
+
+switch(climaActual){
+case "soleado":
+mensajeClima="☀️ Si el sol brilla, brillamos juntos.";
+break;
+case "nublado":
+mensajeClima="☁️ Aunque el cielo esté gris, yo te abrazo igual.";
+break;
+case "lluvia":
+mensajeClima="🌧️ Si llueve, soy tu refugio.";
+break;
+case "frío":
+mensajeClima="❄️ Si hace frío, yo te cuido.";
+break;
+}
+
+document.getElementById("clima").textContent=mensajeClima;
+
+// ===== CORAZONES =====
+document.body.addEventListener("click",e=>{
+const heart=document.createElement("div");
+heart.className="corazon";
+heart.textContent="💗";
+heart.style.left=e.clientX+"px";
+heart.style.top=e.clientY+"px";
+document.body.appendChild(heart);
+setTimeout(()=>heart.remove(),2000);
+});
+
+// ===== CARTA =====
+function abrirCarta(){
+document.getElementById("carta").style.bottom="0";
+}
+function cerrarCarta(){
+document.getElementById("carta").style.bottom="-100%";
+}
+
+// ===== GALERÍA =====
+function abrirGaleria(){
+document.getElementById("galeria").style.right="0";
+}
+function cerrarGaleria(){
+document.getElementById("galeria").style.right="-100%";
+}
+
+// ===== MÚSICA =====
+function toggleMusica(){
+const m=document.getElementById("musica");
+m.paused?m.play():m.pause();
+}
 
 </script>
 </body>
