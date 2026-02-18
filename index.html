@@ -5,42 +5,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Clima & Amor 💗</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;500&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 body{
 margin:0;
 height:100vh;
-overflow:hidden;
 display:flex;
 justify-content:center;
 align-items:center;
 font-family:'Montserrat',sans-serif;
 transition:background 1.5s ease;
+overflow:hidden;
 }
 
 /* CONTENEDOR */
 .container{
-background:rgba(255,255,255,0.88);
+background:rgba(255,255,255,0.92);
 backdrop-filter:blur(20px);
 padding:50px;
-border-radius:40px;
+border-radius:35px;
 text-align:center;
-box-shadow:0 30px 60px rgba(0,0,0,0.25);
-max-width:90%;
-z-index:2;
+box-shadow:0 25px 50px rgba(0,0,0,0.2);
+max-width:420px;
+width:90%;
 }
 
 h1{
 font-family:'Playfair Display',serif;
 font-size:24px;
-margin-bottom:10px;
+margin-bottom:8px;
 }
 
 #contador{
-margin-top:10px;
+font-family:'Quicksand',sans-serif;
 font-size:14px;
+margin-bottom:10px;
 opacity:0.8;
+}
+
+#ciudad{
+font-size:14px;
+margin-bottom:10px;
 }
 
 #climaIcono{
@@ -48,82 +54,26 @@ font-size:50px;
 margin:10px 0;
 }
 
+#temperatura{
+font-size:20px;
+margin-bottom:10px;
+}
+
 #mensaje{
+font-family:'Quicksand',sans-serif;
 margin-top:15px;
 font-size:16px;
-line-height:1.5em;
+line-height:1.6em;
+min-height:60px;
+transition:opacity 0.5s ease;
 }
-
-/* ESTRELLAS */
-.estrella{
-position:absolute;
-width:3px;
-height:3px;
-background:white;
-border-radius:50%;
-opacity:0.8;
-animation:parpadear 2s infinite alternate;
-}
-
-@keyframes parpadear{
-from{opacity:0.3;}
-to{opacity:1;}
-}
-
-/* LLUVIA */
-.lluvia{
-position:absolute;
-width:2px;
-height:15px;
-background:rgba(255,255,255,0.6);
-animation:caer 1s linear infinite;
-}
-
-@keyframes caer{
-from{transform:translateY(-10vh);}
-to{transform:translateY(110vh);}
-}
-
-/* NIEBLA */
-.niebla{
-position:absolute;
-width:200px;
-height:200px;
-background:rgba(255,255,255,0.15);
-border-radius:50%;
-filter:blur(40px);
-animation:mover 20s linear infinite;
-}
-
-@keyframes mover{
-from{transform:translateX(-20vw);}
-to{transform:translateX(120vw);}
-}
-
-/* BRILLO SOL */
-.brillo{
-position:absolute;
-width:300px;
-height:300px;
-background:radial-gradient(circle,rgba(255,255,200,0.4),transparent 70%);
-top:10%;
-right:10%;
-animation:respirar 4s ease-in-out infinite;
-}
-
-@keyframes respirar{
-0%{opacity:0.5;}
-50%{opacity:1;}
-100%{opacity:0.5;}
-}
-
 </style>
 </head>
 
 <body>
 
 <div class="container">
-<h1>Tu Clima, Shaiel 💞</h1>
+<h1>Shaiel 💞</h1>
 <div id="contador"></div>
 <div id="ciudad"></div>
 <div id="climaIcono">☀️</div>
@@ -133,25 +83,75 @@ animation:respirar 4s ease-in-out infinite;
 
 <script>
 
-// ===== CONTADOR =====
+// ===== CONTADOR COMPLETO =====
 const fechaInicio=new Date("2026-01-30");
+
 function actualizarContador(){
 const hoy=new Date();
-const dias=Math.floor((hoy-fechaInicio)/(1000*60*60*24));
+const diff=hoy-fechaInicio;
+
+const dias=Math.floor(diff/(1000*60*60*24));
+const meses=Math.floor(dias/30.44);
+const años=Math.floor(meses/12);
+
 document.getElementById("contador").textContent=
-`💗 ${dias} días amándote, Shaiel`;
+`💗 ${años} años • ${meses%12} meses • ${dias} días amándote`;
 }
+
 actualizarContador();
+
+
+// ===== MENSAJES (ROTAN CADA 30 SEGUNDOS) =====
+const mensajes=[
+"Shaiel, amo tu nombre. Amo cómo suena. Amo que sea tuyo.",
+"El clima cambia… lo que siento por vos no.",
+"Si el mundo se apaga, yo sigo eligiéndote.",
+"Me gusta pensar que el universo conspiró para que existieras.",
+"Tu sonrisa debería ser patrimonio mundial.",
+"Cada día contigo es mi estación favorita.",
+"Hay días normales… y días en los que recuerdo que te amo más.",
+"Si el cielo se nubla, yo me quedo igual.",
+"No sé cómo explicarlo, pero con vos todo tiene sentido.",
+"Shaiel, gracias por existir en mi vida.",
+"Podría acostumbrarme a amarte toda la vida.",
+"A veces miro el clima solo para imaginar cómo estás.",
+"Si hace frío, pienso en abrazarte.",
+"Si hace calor, pienso en lo mucho que me acelerás el corazón.",
+"Hay millones de nombres… pero el tuyo es mi favorito.",
+"Si hoy estás cansada, yo estoy acá.",
+"Quiero que siempre recuerdes cuánto te amo.",
+"Tu nombre es mi palabra favorita.",
+"Si el día fue difícil, yo soy tu calma.",
+"El mundo es más bonito porque vos estás en él."
+];
+
+let indice=0;
+
+function cambiarMensaje(){
+const mensajeDiv=document.getElementById("mensaje");
+mensajeDiv.style.opacity=0;
+
+setTimeout(()=>{
+mensajeDiv.textContent=mensajes[indice];
+mensajeDiv.style.opacity=1;
+indice=(indice+1)%mensajes.length;
+},500);
+}
+
+cambiarMensaje();
+setInterval(cambiarMensaje,30000);
+
 
 // ===== CIUDAD =====
 fetch("https://ipapi.co/json/")
 .then(res=>res.json())
 .then(data=>{
-document.getElementById("ciudad").textContent=data.city;
+document.getElementById("ciudad").textContent="📍 "+data.city;
 obtenerClima(data.latitude,data.longitude);
 });
 
-// ===== CLIMA =====
+
+// ===== CLIMA REAL =====
 function obtenerClima(lat,lon){
 fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
 .then(res=>res.json())
@@ -162,84 +162,38 @@ const code=data.current_weather.weathercode;
 document.getElementById("temperatura").textContent=temp+"°C";
 
 let icono="☀️";
-let mensaje="";
 let fondo="";
 
-// LIMPIAR EFECTOS
-document.querySelectorAll(".estrella,.lluvia,.niebla,.brillo").forEach(e=>e.remove());
-
-// SOLEADO
 if(code==0){
 icono="☀️";
 fondo="linear-gradient(135deg,#ffe4f7,#fff6b7)";
-mensaje=`El sol brilla, pero no más que tu sonrisa, Shaiel. Te amo incluso más en días así.`;
-
-let sol=document.createElement("div");
-sol.className="brillo";
-document.body.appendChild(sol);
 }
-
-// NUBLADO
 else if(code>=1 && code<=3){
 icono="⛅";
 fondo="linear-gradient(135deg,#e0f7ff,#fce4ff)";
-mensaje=`Aunque el cielo esté gris, mi amor por vos no se nubla jamás, Shaiel.`;
 }
-
-// LLUVIA
 else if(code>=61 && code<=67){
 icono="🌧️";
 fondo="linear-gradient(135deg,#d6eaff,#e6d6ff)";
-mensaje=`Si llueve, soy tu refugio. Si el mundo pesa, soy tu abrazo, Shaiel.`;
-
-for(let i=0;i<80;i++){
-let gota=document.createElement("div");
-gota.className="lluvia";
-gota.style.left=Math.random()*100+"vw";
-gota.style.animationDuration=(0.5+Math.random())+"s";
-document.body.appendChild(gota);
 }
-}
-
-// FRÍO / OTRO
 else{
 icono="❄️";
 fondo="linear-gradient(135deg,#e0f7ff,#d6f0ff)";
-mensaje=`Si hace frío, te abrigo con todo lo que siento por vos, Shaiel.`;
-
-for(let i=0;i<5;i++){
-let nube=document.createElement("div");
-nube.className="niebla";
-nube.style.top=Math.random()*80+"vh";
-document.body.appendChild(nube);
-}
-}
-
-// MENSAJE SEGÚN TEMPERATURA
-if(temp>30){
-mensaje+=" Hace calor… pero no tanto como lo que siento por vos.";
-}
-if(temp<10){
-mensaje+=" Prometo abrazarte fuerte hasta que pase el frío.";
-}
-
-// ESTRELLAS SOLO DE NOCHE
-const hora=new Date().getHours();
-if(hora>=20 || hora<6){
-for(let i=0;i<60;i++){
-let estrella=document.createElement("div");
-estrella.className="estrella";
-estrella.style.left=Math.random()*100+"vw";
-estrella.style.top=Math.random()*100+"vh";
-document.body.appendChild(estrella);
-}
 }
 
 document.body.style.background=fondo;
 document.getElementById("climaIcono").textContent=icono;
-document.getElementById("mensaje").textContent=mensaje;
 
 });
+}
+
+
+// ===== NOTA SORPRESA ALEATORIA =====
+const random=Math.random();
+if(random<0.15){
+setTimeout(()=>{
+alert("Solo quería recordarte que te amo, Shaiel 💗");
+},4000);
 }
 
 </script>
