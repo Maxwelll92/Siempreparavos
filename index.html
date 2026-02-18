@@ -3,50 +3,105 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clima & Amor 💗</title>
+<title>Shaiel 🌸</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;500&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Quicksand:wght@400;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
 
 <style>
+
 body{
 margin:0;
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-font-family:'Montserrat',sans-serif;
-transition:background 1.5s ease;
+font-family:'Quicksand',sans-serif;
+transition:background 2s ease;
 overflow:hidden;
+}
+
+/* POLVO ONÍRICO */
+.particula{
+position:absolute;
+width:4px;
+height:4px;
+background:rgba(255,255,255,0.6);
+border-radius:50%;
+animation:flotar 15s linear infinite;
+}
+
+@keyframes flotar{
+from{transform:translateY(100vh);}
+to{transform:translateY(-10vh);}
+}
+
+/* FLORES */
+.flor{
+position:absolute;
+font-size:18px;
+animation:caer 12s linear infinite;
+opacity:0.7;
+}
+
+@keyframes caer{
+from{transform:translateY(-10vh) rotate(0deg);}
+to{transform:translateY(110vh) rotate(360deg);}
+}
+
+/* ESTRELLAS */
+.estrella{
+position:absolute;
+width:2px;
+height:2px;
+background:white;
+border-radius:50%;
+opacity:0.7;
+animation:parpadear 2s infinite alternate;
+}
+
+@keyframes parpadear{
+from{opacity:0.3;}
+to{opacity:1;}
 }
 
 /* CONTENEDOR */
 .container{
-background:rgba(255,255,255,0.92);
+background:rgba(255,255,255,0.85);
 backdrop-filter:blur(20px);
 padding:50px;
-border-radius:35px;
+border-radius:40px;
 text-align:center;
-box-shadow:0 25px 50px rgba(0,0,0,0.2);
+box-shadow:0 20px 50px rgba(0,0,0,0.15);
 max-width:420px;
 width:90%;
+z-index:2;
 }
 
+/* TÍTULO */
 h1{
 font-family:'Playfair Display',serif;
-font-size:24px;
-margin-bottom:8px;
+font-size:26px;
+margin-bottom:5px;
 }
 
+/* CONTADOR */
 #contador{
-font-family:'Quicksand',sans-serif;
-font-size:14px;
-margin-bottom:10px;
+font-family:'Cormorant Garamond',serif;
+font-size:16px;
 opacity:0.8;
+margin-bottom:15px;
 }
 
-#ciudad{
-font-size:14px;
-margin-bottom:10px;
+/* BURBUJA MENSAJE */
+.burbuja{
+margin-top:15px;
+padding:15px 20px;
+border-radius:25px;
+background:rgba(255,255,255,0.6);
+font-family:'Cormorant Garamond',serif;
+font-size:18px;
+line-height:1.5em;
+transition:opacity 0.5s ease;
 }
 
 #climaIcono{
@@ -54,101 +109,77 @@ font-size:50px;
 margin:10px 0;
 }
 
-#temperatura{
-font-size:20px;
-margin-bottom:10px;
-}
-
-#mensaje{
-font-family:'Quicksand',sans-serif;
-margin-top:15px;
-font-size:16px;
-line-height:1.6em;
-min-height:60px;
-transition:opacity 0.5s ease;
-}
 </style>
 </head>
 
 <body>
 
 <div class="container">
-<h1>Shaiel 💞</h1>
+<h1>Shaiel 🌷</h1>
 <div id="contador"></div>
 <div id="ciudad"></div>
 <div id="climaIcono">☀️</div>
 <div id="temperatura"></div>
-<div id="mensaje"></div>
+<div class="burbuja" id="mensaje"></div>
 </div>
 
 <script>
 
-// ===== CONTADOR COMPLETO =====
-const fechaInicio=new Date("2026-01-30");
+// ===== CONTADOR =====
+const inicio=new Date("2026-01-30");
 
 function actualizarContador(){
 const hoy=new Date();
-const diff=hoy-fechaInicio;
+const diff=hoy-inicio;
 
 const dias=Math.floor(diff/(1000*60*60*24));
 const meses=Math.floor(dias/30.44);
 const años=Math.floor(meses/12);
 
 document.getElementById("contador").textContent=
-`💗 ${años} años • ${meses%12} meses • ${dias} días amándote`;
+`${años} años • ${meses%12} meses • ${dias} días contigo`;
 }
-
 actualizarContador();
 
 
-// ===== MENSAJES (ROTAN CADA 30 SEGUNDOS) =====
-const mensajes=[
-"Shaiel, amo tu nombre. Amo cómo suena. Amo que sea tuyo.",
-"El clima cambia… lo que siento por vos no.",
-"Si el mundo se apaga, yo sigo eligiéndote.",
-"Me gusta pensar que el universo conspiró para que existieras.",
-"Tu sonrisa debería ser patrimonio mundial.",
-"Cada día contigo es mi estación favorita.",
-"Hay días normales… y días en los que recuerdo que te amo más.",
-"Si el cielo se nubla, yo me quedo igual.",
-"No sé cómo explicarlo, pero con vos todo tiene sentido.",
-"Shaiel, gracias por existir en mi vida.",
-"Podría acostumbrarme a amarte toda la vida.",
-"A veces miro el clima solo para imaginar cómo estás.",
-"Si hace frío, pienso en abrazarte.",
-"Si hace calor, pienso en lo mucho que me acelerás el corazón.",
-"Hay millones de nombres… pero el tuyo es mi favorito.",
-"Si hoy estás cansada, yo estoy acá.",
-"Quiero que siempre recuerdes cuánto te amo.",
-"Tu nombre es mi palabra favorita.",
-"Si el día fue difícil, yo soy tu calma.",
-"El mundo es más bonito porque vos estás en él."
-];
-
-let indice=0;
-
-function cambiarMensaje(){
-const mensajeDiv=document.getElementById("mensaje");
-mensajeDiv.style.opacity=0;
-
-setTimeout(()=>{
-mensajeDiv.textContent=mensajes[indice];
-mensajeDiv.style.opacity=1;
-indice=(indice+1)%mensajes.length;
-},500);
+// ===== POLVO BASE =====
+for(let i=0;i<25;i++){
+let p=document.createElement("div");
+p.className="particula";
+p.style.left=Math.random()*100+"vw";
+p.style.animationDuration=(10+Math.random()*10)+"s";
+document.body.appendChild(p);
 }
 
-cambiarMensaje();
-setInterval(cambiarMensaje,30000);
 
-
-// ===== CIUDAD =====
+// ===== DETECTAR CIUDAD =====
 fetch("https://ipapi.co/json/")
 .then(res=>res.json())
 .then(data=>{
 document.getElementById("ciudad").textContent="📍 "+data.city;
 obtenerClima(data.latitude,data.longitude);
 });
+
+
+// ===== MENSAJES POR CLIMA =====
+let mensajesActuales=[];
+
+function rotarMensajes(){
+const mensaje=document.getElementById("mensaje");
+let index=0;
+
+function cambiar(){
+mensaje.style.opacity=0;
+setTimeout(()=>{
+mensaje.textContent=mensajesActuales[index];
+mensaje.style.opacity=1;
+index=(index+1)%mensajesActuales.length;
+},400);
+}
+
+cambiar();
+setInterval(cambiar,30000);
+}
 
 
 // ===== CLIMA REAL =====
@@ -161,39 +192,93 @@ const code=data.current_weather.weathercode;
 
 document.getElementById("temperatura").textContent=temp+"°C";
 
-let icono="☀️";
-let fondo="";
+document.querySelectorAll(".flor,.estrella").forEach(e=>e.remove());
 
+let fondo="";
+let icono="";
+
+
+// ☀️ SOLEADO
 if(code==0){
 icono="☀️";
-fondo="linear-gradient(135deg,#ffe4f7,#fff6b7)";
+fondo="linear-gradient(135deg,#ffe6f7,#fff1b8)";
+
+mensajesActuales=[
+"Soleado… como tu energía cuando sonríes.",
+"Shaiel, tu nombre brilla más que el sol.",
+"Hoy el cielo está claro… como lo que siento por vos."
+];
+
+// flores suaves
+for(let i=0;i<10;i++){
+let flor=document.createElement("div");
+flor.className="flor";
+flor.textContent="🌸";
+flor.style.left=Math.random()*100+"vw";
+flor.style.animationDuration=(8+Math.random()*5)+"s";
+document.body.appendChild(flor);
 }
+}
+
+
+// ☁️ NUBLADO
 else if(code>=1 && code<=3){
-icono="⛅";
-fondo="linear-gradient(135deg,#e0f7ff,#fce4ff)";
+icono="☁️";
+fondo="linear-gradient(135deg,#e8eafc,#f3e5f5)";
+
+mensajesActuales=[
+"Nublado… pero mi amor por vos no se oscurece.",
+"Hay días grises que igual llevan tu nombre.",
+"Shaiel, incluso en lo profundo, te elijo."
+];
 }
+
+
+// 🌧️ LLUVIA
 else if(code>=61 && code<=67){
 icono="🌧️";
-fondo="linear-gradient(135deg,#d6eaff,#e6d6ff)";
+fondo="linear-gradient(135deg,#d6e4ff,#e0c3fc)";
+
+mensajesActuales=[
+"Lluvia… y yo siendo tu refugio.",
+"Si el mundo pesa, yo te sostengo.",
+"Shaiel, estoy incluso cuando cae todo."
+];
 }
+
+
+// ❄️ FRÍO
 else{
 icono="❄️";
-fondo="linear-gradient(135deg,#e0f7ff,#d6f0ff)";
+fondo="linear-gradient(135deg,#e0f7fa,#e1bee7)";
+
+mensajesActuales=[
+"Frío… pero mi cuidado es cálido.",
+"Te envolvería en todo lo que siento.",
+"Shaiel, mi suavidad es para vos."
+];
 }
+
 
 document.body.style.background=fondo;
 document.getElementById("climaIcono").textContent=icono;
 
-});
+
+// ESTRELLAS SOLO NOCHE
+const hora=new Date().getHours();
+if(hora>=20 || hora<6){
+for(let i=0;i<40;i++){
+let star=document.createElement("div");
+star.className="estrella";
+star.style.left=Math.random()*100+"vw";
+star.style.top=Math.random()*100+"vh";
+document.body.appendChild(star);
+}
 }
 
+rotarMensajes();
 
-// ===== NOTA SORPRESA ALEATORIA =====
-const random=Math.random();
-if(random<0.15){
-setTimeout(()=>{
-alert("Solo quería recordarte que te amo, Shaiel 💗");
-},4000);
+});
 }
 
 </script>
