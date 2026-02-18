@@ -1,256 +1,279 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shaiel 🌸</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shaiel 🌸</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Quicksand:wght@400;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Quicksand:wght@400;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
 
-<style>
-body{
-margin:0;
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-font-family:'Quicksand',sans-serif;
-overflow:hidden;
-transition:background 2s ease;
-}
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            transition: background 2s ease;
+            background: #f3e5f5; /* Fondo inicial suave */
+        }
 
-/* AURORA SUAVE */
-body::before{
-content:"";
-position:absolute;
-width:200%;
-height:200%;
-background:radial-gradient(circle at 30% 30%,rgba(255,255,255,0.15),transparent 40%),
-radial-gradient(circle at 70% 70%,rgba(255,255,255,0.12),transparent 40%);
-animation:aurora 25s linear infinite;
-z-index:0;
-}
+        /* AURORA SUAVE */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), transparent 40%),
+                        radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.12), transparent 40%);
+            animation: aurora 25s linear infinite;
+            z-index: 0;
+        }
 
-@keyframes aurora{
-0%{transform:translate(-10%,-10%) rotate(0deg);}
-50%{transform:translate(-5%,-5%) rotate(180deg);}
-100%{transform:translate(-10%,-10%) rotate(360deg);}
-}
+        @keyframes aurora {
+            0% { transform: translate(-10%, -10%) rotate(0deg); }
+            50% { transform: translate(-5%, -5%) rotate(180deg); }
+            100% { transform: translate(-10%, -10%) rotate(360deg); }
+        }
 
-/* CONTENEDOR */
-.container{
-position:relative;
-z-index:2;
-background:rgba(255,255,255,0.85);
-backdrop-filter:blur(20px);
-padding:45px;
-border-radius:35px;
-text-align:center;
-box-shadow:0 20px 50px rgba(0,0,0,0.15);
-max-width:420px;
-width:90%;
-}
+        /* CONTENEDOR */
+        .container {
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            padding: 45px;
+            border-radius: 35px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            max-width: 420px;
+            width: 90%;
+        }
 
-/* TÍTULO */
-h1{
-font-family:'Playfair Display',serif;
-font-size:26px;
-margin-bottom:8px;
-}
+        /* TÍTULO */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
 
-#contador{
-font-family:'Cormorant Garamond',serif;
-font-size:15px;
-margin-bottom:12px;
-opacity:0.8;
-}
+        #contador {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 15px;
+            margin-bottom: 12px;
+            opacity: 0.8;
+        }
 
-#climaIcono{
-font-size:50px;
-margin:10px 0;
-}
+        #ciudad {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
 
-.burbuja{
-margin-top:15px;
-padding:15px 20px;
-border-radius:30px;
-font-family:'Cormorant Garamond',serif;
-font-size:18px;
-line-height:1.5em;
-transition:all 0.4s ease;
-}
+        #climaIcono {
+            font-size: 50px;
+            margin: 10px 0;
+        }
 
-/* FORMAS SEGÚN CLIMA */
-.soleado{background:rgba(255,255,255,0.6);border-radius:40px;}
-.nublado{background:rgba(230,230,255,0.6);border-radius:25px 40px 40px 25px;}
-.lluvia{background:rgba(220,230,255,0.6);border-radius:40px 40px 25px 40px;}
-.frio{background:rgba(240,255,255,0.6);border-radius:50px;}
+        .burbuja {
+            margin-top: 15px;
+            padding: 15px 20px;
+            border-radius: 30px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            line-height: 1.5em;
+            transition: all 0.4s ease;
+        }
 
-.estrella{
-position:absolute;
-width:2px;
-height:2px;
-background:white;
-border-radius:50%;
-opacity:0.7;
-animation:parpadear 2s infinite alternate;
-}
+        /* FORMAS SEGÚN CLIMA */
+        .soleado { background: rgba(255, 255, 255, 0.6); border-radius: 40px; }
+        .nublado { background: rgba(230, 230, 255, 0.6); border-radius: 25px 40px 40px 25px; }
+        .lluvia { background: rgba(220, 230, 255, 0.6); border-radius: 40px 40px 25px 40px; }
+        .frio { background: rgba(240, 255, 255, 0.6); border-radius: 50px; }
 
-@keyframes parpadear{
-from{opacity:0.3;}
-to{opacity:1;}
-}
+        .estrella {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: parpadear 2s infinite alternate;
+        }
 
-.flor{
-position:absolute;
-font-size:16px;
-animation:caer 12s linear infinite;
-opacity:0.6;
-}
+        @keyframes parpadear {
+            from { opacity: 0.3; }
+            to { opacity: 1; }
+        }
 
-@keyframes caer{
-from{transform:translateY(-10vh) rotate(0deg);}
-to{transform:translateY(110vh) rotate(360deg);}
-}
+        .flor {
+            position: absolute;
+            font-size: 16px;
+            animation: caer 12s linear infinite;
+            opacity: 0.6;
+        }
 
-</style>
+        @keyframes caer {
+            from { transform: translateY(-10vh) rotate(0deg); }
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="container">
-<h1>Shaiel 🌷</h1>
-<div id="contador"></div>
-<div id="ciudad"></div>
-<div id="climaIcono"></div>
-<div id="temperatura"></div>
-<div id="mensaje" class="burbuja"></div>
+    <h1>Shaiel 🌷</h1>
+    <div id="contador"></div>
+    <div id="ciudad">Buscando ubicación...</div>
+    <div id="climaIcono"></div>
+    <div id="temperatura"></div>
+    <div id="mensaje" class="burbuja"></div>
 </div>
 
 <script>
+    // --- 1. CONTADOR ---
+    const inicio = new Date("2026-01-30");
+    function actualizarContador() {
+        const hoy = new Date();
+        const diff = hoy - inicio;
+        const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const meses = Math.floor(dias / 30.44);
+        const años = Math.floor(meses / 12);
+        document.getElementById("contador").textContent =
+            `${años} años • ${meses % 12} meses • ${dias} días contigo`;
+    }
+    actualizarContador();
 
-// CONTADOR
-const inicio=new Date("2026-01-30");
-function actualizarContador(){
-const hoy=new Date();
-const diff=hoy-inicio;
-const dias=Math.floor(diff/(1000*60*60*24));
-const meses=Math.floor(dias/30.44);
-const años=Math.floor(meses/12);
-document.getElementById("contador").textContent=
-`${años} años • ${meses%12} meses • ${dias} días contigo`;
-}
-actualizarContador();
+    // --- 2. GEOLOCALIZACIÓN EXACTA ---
+    function iniciarUbicacion() {
+        if (navigator.geolocation) {
+            // Intentamos GPS (Alta precisión)
+            navigator.geolocation.getCurrentPosition(obtenerNombreCiudad, manejarErrorGps, {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            });
+        } else {
+            // Si el navegador no soporta GPS, usamos IP
+            obtenerPorIP();
+        }
+    }
 
-// DETECTAR CIUDAD
-fetch("https://ipapi.co/json/")
-.then(res=>res.json())
-.then(data=>{
-document.getElementById("ciudad").textContent="📍 "+data.city;
-obtenerClima(data.latitude,data.longitude);
-});
+    function obtenerNombreCiudad(posicion) {
+        const lat = posicion.coords.latitude;
+        const lon = posicion.coords.longitude;
 
-let mensajes=[];
-let claseActual="";
+        // Usamos Nominatim para saber si es Garín, Escobar, etc.
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+            .then(res => res.json())
+            .then(data => {
+                const lugar = data.address.city || data.address.town || data.address.village || data.address.suburb || "Tu ubicación";
+                document.getElementById("ciudad").textContent = "📍 " + lugar;
+                obtenerClima(lat, lon);
+            })
+            .catch(() => {
+                document.getElementById("ciudad").textContent = "📍 Ubicación detectada";
+                obtenerClima(lat, lon);
+            });
+    }
 
-function rotar(){
-let i=0;
-const el=document.getElementById("mensaje");
-function cambiar(){
-el.style.opacity=0;
-setTimeout(()=>{
-el.textContent=mensajes[i];
-el.style.opacity=1;
-i=(i+1)%mensajes.length;
-},300);
-}
-cambiar();
-setInterval(cambiar,30000);
-}
+    function manejarErrorGps(error) {
+        console.warn("GPS falló o fue denegado, usando IP...");
+        obtenerPorIP();
+    }
 
-function obtenerClima(lat,lon){
-fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
-.then(res=>res.json())
-.then(data=>{
-const temp=Math.round(data.current_weather.temperature);
-const code=data.current_weather.weathercode;
-document.getElementById("temperatura").textContent=temp+"°C";
+    function obtenerPorIP() {
+        fetch("https://ipapi.co/json/")
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("ciudad").textContent = "📍 " + data.city;
+                obtenerClima(data.latitude, data.longitude);
+            });
+    }
 
-document.querySelectorAll(".flor,.estrella").forEach(e=>e.remove());
+    // --- 3. CLIMA Y MENSAJES ---
+    let mensajes = [];
+    function obtenerClima(lat, lon) {
+        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+            .then(res => res.json())
+            .then(data => {
+                const temp = Math.round(data.current_weather.temperature);
+                const code = data.current_weather.weathercode;
+                document.getElementById("temperatura").textContent = temp + "°C";
 
-let fondo="";
-let icono="";
-let clase="";
-if(code==0){
-icono="☀️";
-clase="soleado";
-fondo="linear-gradient(135deg,#ffe6f7,#fff1b8)";
-mensajes=[
-"Soleado… como tu energía.",
-"Tu nombre brilla más que el sol.",
-"Hoy todo se siente ligero contigo."
-];
-for(let i=0;i<10;i++){
-let flor=document.createElement("div");
-flor.className="flor";
-flor.textContent="🌸";
-flor.style.left=Math.random()*100+"vw";
-document.body.appendChild(flor);
-}
-}
-else if(code>=1 && code<=3){
-icono="☁️";
-clase="nublado";
-fondo="linear-gradient(135deg,#e8eafc,#f3e5f5)";
-mensajes=[
-"Aunque el cielo esté gris, te elijo.",
-"Hay profundidad en los días suaves.",
-"Shaiel, incluso en silencio, estás."
-];
-}
-else if(code>=61 && code<=67){
-icono="🌧️";
-clase="lluvia";
-fondo="linear-gradient(135deg,#d6e4ff,#e0c3fc)";
-mensajes=[
-"Si llueve, soy tu refugio.",
-"Estoy incluso cuando todo cae.",
-"Mi presencia es constante."
-];
-}
-else{
-icono="❄️";
-clase="frio";
-fondo="linear-gradient(135deg,#e0f7fa,#e1bee7)";
-mensajes=[
-"Frío afuera, suavidad adentro.",
-"Te envolvería con calma.",
-"Mi cuidado es cálido."
-];
-}
+                document.querySelectorAll(".flor,.estrella").forEach(e => e.remove());
 
-document.body.style.background=fondo;
-document.getElementById("climaIcono").textContent=icono;
+                let fondo = "";
+                let icono = "";
+                let clase = "";
 
-const mensajeEl=document.getElementById("mensaje");
-mensajeEl.className="burbuja "+clase;
+                if (code == 0) {
+                    icono = "☀️"; clase = "soleado";
+                    fondo = "linear-gradient(135deg,#ffe6f7,#fff1b8)";
+                    mensajes = ["Soleado… como tu energía.", "Tu nombre brilla más que el sol.", "Hoy todo se siente ligero contigo."];
+                    for (let i = 0; i < 10; i++) {
+                        let flor = document.createElement("div");
+                        flor.className = "flor"; flor.textContent = "🌸";
+                        flor.style.left = Math.random() * 100 + "vw";
+                        document.body.appendChild(flor);
+                    }
+                } else if (code >= 1 && code <= 3) {
+                    icono = "☁️"; clase = "nublado";
+                    fondo = "linear-gradient(135deg,#e8eafc,#f3e5f5)";
+                    mensajes = ["Aunque el cielo esté gris, te elijo.", "Hay profundidad en los días suaves.", "Shaiel, incluso en silencio, estás."];
+                } else if (code >= 61 && code <= 67) {
+                    icono = "🌧️"; clase = "lluvia";
+                    fondo = "linear-gradient(135deg,#d6e4ff,#e0c3fc)";
+                    mensajes = ["Si llueve, soy tu refugio.", "Estoy incluso cuando todo cae.", "Mi presencia es constante."];
+                } else {
+                    icono = "❄️"; clase = "frio";
+                    fondo = "linear-gradient(135deg,#e0f7fa,#e1bee7)";
+                    mensajes = ["Frío afuera, suavidad adentro.", "Te envolvería con calma.", "Mi cuidado es cálido."];
+                }
 
-const hora=new Date().getHours();
-if(hora>=20 || hora<6){
-for(let i=0;i<40;i++){
-let star=document.createElement("div");
-star.className="estrella";
-star.style.left=Math.random()*100+"vw";
-star.style.top=Math.random()*100+"vh";
-document.body.appendChild(star);
-}
-}
+                document.body.style.background = fondo;
+                document.getElementById("climaIcono").textContent = icono;
+                const mensajeEl = document.getElementById("mensaje");
+                mensajeEl.className = "burbuja " + clase;
 
-rotar();
-});
-}
+                // Estrellas de noche
+                const hora = new Date().getHours();
+                if (hora >= 20 || hora < 6) {
+                    for (let i = 0; i < 40; i++) {
+                        let star = document.createElement("div");
+                        star.className = "estrella";
+                        star.style.left = Math.random() * 100 + "vw";
+                        star.style.top = Math.random() * 100 + "vh";
+                        document.body.appendChild(star);
+                    }
+                }
+                rotar();
+            });
+    }
+
+    function rotar() {
+        let i = 0;
+        const el = document.getElementById("mensaje");
+        function cambiar() {
+            el.style.opacity = 0;
+            setTimeout(() => {
+                el.textContent = mensajes[i];
+                el.style.opacity = 1;
+                i = (i + 1) % mensajes.length;
+            }, 300);
+        }
+        cambiar();
+        setInterval(cambiar, 30000);
+    }
+
+    // Iniciar todo
+    iniciarUbicacion();
 
 </script>
 
 </body>
-</html>
+  </html>
