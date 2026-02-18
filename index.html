@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nuestra App 💗</title>
+<title>Clima & Amor 💗</title>
 
-<!-- Tipografía elegante -->
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
 
 <style>
 body{
@@ -20,365 +19,230 @@ font-family:'Montserrat',sans-serif;
 transition:background 1.5s ease;
 }
 
-/* INTRO CINEMÁTICA */
-#inicio{
-position:fixed;
-width:100%;
-height:100%;
-background:black;
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-z-index:20;
-animation:fadeIn 2s ease;
-text-align:center;
-padding:30px;
-}
-
-#inicio h2{
-font-family:'Playfair Display',serif;
-font-size:28px;
-letter-spacing:2px;
-}
-
-#inicio button{
-margin-top:30px;
-padding:15px 35px;
-border:none;
-border-radius:40px;
-background:linear-gradient(135deg,#ffb6ec,#b6d8ff);
-color:white;
-font-size:16px;
-cursor:pointer;
-}
-
-/* ICONO APP */
-.app-icon{
-position:absolute;
-top:20px;
-left:20px;
-width:70px;
-height:70px;
-border-radius:22px;
-background:linear-gradient(135deg,#ff9de2,#9dd6ff);
-display:flex;
-justify-content:center;
-align-items:center;
-font-weight:bold;
-font-size:22px;
-color:white;
-box-shadow:0 15px 30px rgba(0,0,0,0.3);
-}
-
-/* CONTENEDOR PRINCIPAL */
+/* CONTENEDOR */
 .container{
-background:rgba(255,255,255,0.85);
-backdrop-filter:blur(15px);
+background:rgba(255,255,255,0.88);
+backdrop-filter:blur(20px);
 padding:50px;
 border-radius:40px;
 text-align:center;
 box-shadow:0 30px 60px rgba(0,0,0,0.25);
 max-width:90%;
 z-index:2;
-animation:fadeIn 1.5s ease;
 }
 
-/* MENSAJE */
 h1{
 font-family:'Playfair Display',serif;
-font-size:26px;
-min-height:80px;
-transition:opacity 0.8s ease;
+font-size:24px;
+margin-bottom:10px;
 }
 
-/* WIDGET CONTADOR */
-#widget{
-margin-top:15px;
-padding:10px 20px;
-border-radius:25px;
-background:linear-gradient(135deg,#ffd6f5,#d6f0ff);
-display:inline-block;
+#contador{
+margin-top:10px;
 font-size:14px;
+opacity:0.8;
 }
 
-/* BOTONES */
-button{
-margin-top:12px;
-padding:8px 20px;
-border:none;
-border-radius:20px;
-background:linear-gradient(135deg,#ffb6ec,#b6d8ff);
-color:white;
-cursor:pointer;
+#climaIcono{
+font-size:50px;
+margin:10px 0;
 }
 
-/* CARTA PASTEL */
-#carta{
-position:fixed;
-bottom:-100%;
-left:0;
-width:100%;
-height:65%;
-background:linear-gradient(135deg,rgba(255,182,236,0.6),rgba(182,216,255,0.6));
-backdrop-filter:blur(20px);
-border-top-left-radius:50px;
-border-top-right-radius:50px;
-box-shadow:0 -15px 50px rgba(0,0,0,0.3);
-transition:bottom 0.8s ease;
-padding:40px;
-overflow:auto;
-z-index:15;
-font-family:'Playfair Display',serif;
+#mensaje{
+margin-top:15px;
+font-size:16px;
+line-height:1.5em;
 }
 
-/* GALERÍA */
-#galeria{
-position:fixed;
-right:-100%;
-top:0;
-width:70%;
-height:100%;
+/* ESTRELLAS */
+.estrella{
+position:absolute;
+width:3px;
+height:3px;
 background:white;
-transition:right 0.8s ease;
-padding:30px;
-overflow:auto;
-z-index:14;
+border-radius:50%;
+opacity:0.8;
+animation:parpadear 2s infinite alternate;
 }
 
-#galeria img{
-width:100%;
-border-radius:20px;
-margin-bottom:15px;
-}
-
-/* ANIMACIONES */
-@keyframes fadeIn{
-from{opacity:0;}
+@keyframes parpadear{
+from{opacity:0.3;}
 to{opacity:1;}
 }
 
-.corazon{
+/* LLUVIA */
+.lluvia{
 position:absolute;
-font-size:20px;
-animation:flotar 2s ease forwards;
+width:2px;
+height:15px;
+background:rgba(255,255,255,0.6);
+animation:caer 1s linear infinite;
 }
 
-@keyframes flotar{
-from{transform:translateY(0);opacity:1;}
-to{transform:translateY(-120px);opacity:0;}
+@keyframes caer{
+from{transform:translateY(-10vh);}
+to{transform:translateY(110vh);}
 }
+
+/* NIEBLA */
+.niebla{
+position:absolute;
+width:200px;
+height:200px;
+background:rgba(255,255,255,0.15);
+border-radius:50%;
+filter:blur(40px);
+animation:mover 20s linear infinite;
+}
+
+@keyframes mover{
+from{transform:translateX(-20vw);}
+to{transform:translateX(120vw);}
+}
+
+/* BRILLO SOL */
+.brillo{
+position:absolute;
+width:300px;
+height:300px;
+background:radial-gradient(circle,rgba(255,255,200,0.4),transparent 70%);
+top:10%;
+right:10%;
+animation:respirar 4s ease-in-out infinite;
+}
+
+@keyframes respirar{
+0%{opacity:0.5;}
+50%{opacity:1;}
+100%{opacity:0.5;}
+}
+
 </style>
 </head>
 
 <body>
 
-<div id="inicio">
-<h2>Nuestra Historia 💫</h2>
-<p>Todo empezó el 30 de enero del 2026…</p>
-<button onclick="entrar()">Entrar</button>
-</div>
-
-<div class="app-icon">M&A</div>
-
 <div class="container">
-<h1 id="mensaje">Cargando...</h1>
-<div id="widget"></div>
+<h1>Tu Clima, Shaiel 💞</h1>
+<div id="contador"></div>
 <div id="ciudad"></div>
-<div id="clima"></div>
-<button onclick="toggleMusica()">🎵 Música</button>
-<button onclick="abrirCarta()">💌 Carta</button>
-<button onclick="abrirGaleria()">📸 Fotos</button>
+<div id="climaIcono">☀️</div>
+<div id="temperatura"></div>
+<div id="mensaje"></div>
 </div>
-
-<div id="carta">
-<h2>Para vos 💖</h2>
-<p>
-Desde el 30 de enero del 2026 algo cambió.
-No fue el mundo…
-fue mi forma de sentirlo.
-Si el cielo se nubla, te acompaño.
-Si llueve, te abrazo.
-Si hace frío, te cuido.
-Si el sol brilla, brillamos juntos.
-Siempre vos.
-</p>
-<button onclick="cerrarCarta()">Cerrar</button>
-</div>
-
-<div id="galeria">
-<h2>Nuestros Recuerdos 📸</h2>
-<img src="foto1.jpg">
-<img src="foto2.jpg">
-<img src="foto3.jpg">
-<button onclick="cerrarGaleria()">Cerrar</button>
-</div>
-
-<audio id="musica" loop>
-<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3" type="audio/mpeg">
-</audio>
 
 <script>
-
-// ENTRAR
-function entrar(){
-document.getElementById("inicio").style.display="none";
-}
-
-// CONTADOR
-const fechaInicio=new Date("2026-01-30");
-function actualizarContador(){
-const hoy=new Date();
-const dias=Math.floor((hoy-fechaInicio)/(1000*60*60*24));
-document.getElementById("widget").textContent=
-`💗 ${dias} días juntos`;
-}
-actualizarContador();
-
-// CORAZONES
-document.body.addEventListener("click",e=>{
-const heart=document.createElement("div");
-heart.className="corazon";
-heart.textContent="💗";
-heart.style.left=e.clientX+"px";
-heart.style.top=e.clientY+"px";
-document.body.appendChild(heart);
-setTimeout(()=>heart.remove(),2000);
-});
-
-// CARTA
-function abrirCarta(){
-document.getElementById("carta").style.bottom="0";
-}
-function cerrarCarta(){
-document.getElementById("carta").style.bottom="-100%";
-}
-
-// GALERÍA
-function abrirGaleria(){
-document.getElementById("galeria").style.right="0";
-}
-function cerrarGaleria(){
-document.getElementById("galeria").style.right="-100%";
-}
-
-// MÚSICA
-function toggleMusica(){
-const m=document.getElementById("musica");
-m.paused?m.play():m.pause();
-}
-<script>
-
-// ===== INTRO SUAVE =====
-function entrar(){
-document.getElementById("inicio").style.opacity="0";
-setTimeout(()=>{
-document.getElementById("inicio").style.display="none";
-},1000);
-}
 
 // ===== CONTADOR =====
 const fechaInicio=new Date("2026-01-30");
 function actualizarContador(){
 const hoy=new Date();
 const dias=Math.floor((hoy-fechaInicio)/(1000*60*60*24));
-document.getElementById("widget").textContent=
-`💗 ${dias} días juntos`;
+document.getElementById("contador").textContent=
+`💗 ${dias} días amándote, Shaiel`;
 }
 actualizarContador();
 
-// ===== MENSAJES SEGÚN HORA =====
-function mensajeSegunHora(){
-const hora=new Date().getHours();
-let mensaje="";
-
-if(hora>=6 && hora<12){
-mensaje="Buenos días… ojalá despertarme siempre a tu lado ☀️";
-document.body.style.background="linear-gradient(135deg,#ffd6f5,#d6f0ff)";
-}
-else if(hora>=12 && hora<19){
-mensaje="Espero que tu día esté siendo tan lindo como tu sonrisa 🌸";
-document.body.style.background="linear-gradient(135deg,#ffe4f7,#cfe9ff)";
-}
-else{
-mensaje="Si el día fue pesado, yo estoy acá para vos 🌙";
-document.body.style.background="linear-gradient(135deg,#1e3c72,#2a5298)";
-}
-
-document.getElementById("mensaje").textContent=mensaje;
-}
-
-mensajeSegunHora();
-
-// ===== CIUDAD AUTOMÁTICA =====
+// ===== CIUDAD =====
 fetch("https://ipapi.co/json/")
 .then(res=>res.json())
 .then(data=>{
-document.getElementById("ciudad").textContent=
-`Estés donde estés (${data.city}), estoy con vos 💞`;
-})
-.catch(()=>{
-document.getElementById("ciudad").textContent=
-"Estés donde estés, estoy con vos 💞";
+document.getElementById("ciudad").textContent=data.city;
+obtenerClima(data.latitude,data.longitude);
 });
 
-// ===== CLIMA SIMULADO (EMOCIONAL) =====
-const estadosClima=["soleado","nublado","lluvia","frío"];
-const climaActual=estadosClima[Math.floor(Math.random()*estadosClima.length)];
+// ===== CLIMA =====
+function obtenerClima(lat,lon){
+fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+.then(res=>res.json())
+.then(data=>{
+const temp=Math.round(data.current_weather.temperature);
+const code=data.current_weather.weathercode;
 
-let mensajeClima="";
+document.getElementById("temperatura").textContent=temp+"°C";
 
-switch(climaActual){
-case "soleado":
-mensajeClima="☀️ Si el sol brilla, brillamos juntos.";
-break;
-case "nublado":
-mensajeClima="☁️ Aunque el cielo esté gris, yo te abrazo igual.";
-break;
-case "lluvia":
-mensajeClima="🌧️ Si llueve, soy tu refugio.";
-break;
-case "frío":
-mensajeClima="❄️ Si hace frío, yo te cuido.";
-break;
+let icono="☀️";
+let mensaje="";
+let fondo="";
+
+// LIMPIAR EFECTOS
+document.querySelectorAll(".estrella,.lluvia,.niebla,.brillo").forEach(e=>e.remove());
+
+// SOLEADO
+if(code==0){
+icono="☀️";
+fondo="linear-gradient(135deg,#ffe4f7,#fff6b7)";
+mensaje=`El sol brilla, pero no más que tu sonrisa, Shaiel. Te amo incluso más en días así.`;
+
+let sol=document.createElement("div");
+sol.className="brillo";
+document.body.appendChild(sol);
 }
 
-document.getElementById("clima").textContent=mensajeClima;
+// NUBLADO
+else if(code>=1 && code<=3){
+icono="⛅";
+fondo="linear-gradient(135deg,#e0f7ff,#fce4ff)";
+mensaje=`Aunque el cielo esté gris, mi amor por vos no se nubla jamás, Shaiel.`;
+}
 
-// ===== CORAZONES =====
-document.body.addEventListener("click",e=>{
-const heart=document.createElement("div");
-heart.className="corazon";
-heart.textContent="💗";
-heart.style.left=e.clientX+"px";
-heart.style.top=e.clientY+"px";
-document.body.appendChild(heart);
-setTimeout(()=>heart.remove(),2000);
+// LLUVIA
+else if(code>=61 && code<=67){
+icono="🌧️";
+fondo="linear-gradient(135deg,#d6eaff,#e6d6ff)";
+mensaje=`Si llueve, soy tu refugio. Si el mundo pesa, soy tu abrazo, Shaiel.`;
+
+for(let i=0;i<80;i++){
+let gota=document.createElement("div");
+gota.className="lluvia";
+gota.style.left=Math.random()*100+"vw";
+gota.style.animationDuration=(0.5+Math.random())+"s";
+document.body.appendChild(gota);
+}
+}
+
+// FRÍO / OTRO
+else{
+icono="❄️";
+fondo="linear-gradient(135deg,#e0f7ff,#d6f0ff)";
+mensaje=`Si hace frío, te abrigo con todo lo que siento por vos, Shaiel.`;
+
+for(let i=0;i<5;i++){
+let nube=document.createElement("div");
+nube.className="niebla";
+nube.style.top=Math.random()*80+"vh";
+document.body.appendChild(nube);
+}
+}
+
+// MENSAJE SEGÚN TEMPERATURA
+if(temp>30){
+mensaje+=" Hace calor… pero no tanto como lo que siento por vos.";
+}
+if(temp<10){
+mensaje+=" Prometo abrazarte fuerte hasta que pase el frío.";
+}
+
+// ESTRELLAS SOLO DE NOCHE
+const hora=new Date().getHours();
+if(hora>=20 || hora<6){
+for(let i=0;i<60;i++){
+let estrella=document.createElement("div");
+estrella.className="estrella";
+estrella.style.left=Math.random()*100+"vw";
+estrella.style.top=Math.random()*100+"vh";
+document.body.appendChild(estrella);
+}
+}
+
+document.body.style.background=fondo;
+document.getElementById("climaIcono").textContent=icono;
+document.getElementById("mensaje").textContent=mensaje;
+
 });
-
-// ===== CARTA =====
-function abrirCarta(){
-document.getElementById("carta").style.bottom="0";
-}
-function cerrarCarta(){
-document.getElementById("carta").style.bottom="-100%";
-}
-
-// ===== GALERÍA =====
-function abrirGaleria(){
-document.getElementById("galeria").style.right="0";
-}
-function cerrarGaleria(){
-document.getElementById("galeria").style.right="-100%";
-}
-
-// ===== MÚSICA =====
-function toggleMusica(){
-const m=document.getElementById("musica");
-m.paused?m.play():m.pause();
 }
 
 </script>
+
 </body>
 </html>
