@@ -19,57 +19,83 @@ transition:background 1s ease;
 overflow:hidden;
 }
 
-body.day{background:linear-gradient(180deg,#1d3557,#457b9d);}
-body.night{background:linear-gradient(180deg,#0f1c2e,#1b263b);}
+body.day{background:radial-gradient(circle at 20% 20%,#3a5f8a,#1d3557);}
+body.night{background:radial-gradient(circle at 70% 80%,#1b263b,#0f1c2e);}
 body.storm{
-background:linear-gradient(180deg,#0b0f1a,#141b2d);
-animation:flash 7s infinite;
+background:radial-gradient(circle at 50% 50%,#141b2d,#0b0f1a);
+animation:flash 6s infinite;
 }
 
 @keyframes flash{
 0%,95%,100%{filter:brightness(1);}
-96%{filter:brightness(1.8);}
-97%{filter:brightness(.6);}
+96%{filter:brightness(1.6);}
+97%{filter:brightness(.7);}
 }
 
-/* TARJETA CON TEXTURA Y PROFUNDIDAD */
+/* ===========================
+   TARJETA 3D PROFUNDA
+=========================== */
+
 .card{
 width:400px;
 padding:45px 30px;
 border-radius:40px;
-text-align:center;
 position:relative;
+text-align:center;
 overflow:hidden;
 
+/* Fondo base */
 background:
-radial-gradient(120% 120% at 20% 10%, rgba(255,255,255,0.08), transparent 60%),
-radial-gradient(100% 100% at 80% 90%, rgba(0,0,0,0.25), transparent 60%),
-linear-gradient(160deg,#1b2e47,#243f63 60%,#1b2e47);
+linear-gradient(160deg,#223b5a,#1a2f4a 60%,#16283f);
 
+/* SOMBRA EXTERNA FUERTE */
 box-shadow:
-0 40px 80px rgba(0,0,0,0.55),
-inset 0 0 40px rgba(255,255,255,0.04);
+0 60px 120px rgba(0,0,0,0.6),
+0 0 0 1px rgba(255,255,255,0.04);
+
+/* PERSPECTIVA */
+transform:perspective(1200px) rotateX(3deg);
 }
 
+/* LUZ SUPERIOR */
 .card::before{
 content:"";
 position:absolute;
-top:-50%;
-left:-50%;
-width:200%;
-height:200%;
-background:
-radial-gradient(circle at 30% 40%, rgba(255,255,255,0.05), transparent 40%),
-radial-gradient(circle at 70% 60%, rgba(255,255,255,0.04), transparent 40%);
-animation:waveMove 18s infinite linear;
-opacity:.6;
+top:-40%;
+left:-20%;
+width:140%;
+height:140%;
+background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.15), transparent 60%);
+mix-blend-mode:overlay;
 pointer-events:none;
 }
 
-@keyframes waveMove{
-0%{transform:rotate(0deg);}
-100%{transform:rotate(360deg);}
+/* SOMBRA INTERNA PROFUNDA */
+.card::after{
+content:"";
+position:absolute;
+inset:0;
+border-radius:40px;
+background:
+radial-gradient(circle at 80% 90%, rgba(0,0,0,0.4), transparent 60%),
+radial-gradient(circle at 20% 10%, rgba(255,255,255,0.05), transparent 50%);
+pointer-events:none;
 }
+
+/* CAPA DE TEXTURA SUAVE */
+.card .texture{
+position:absolute;
+inset:0;
+background-image:
+radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+background-size:3px 3px;
+opacity:.4;
+pointer-events:none;
+}
+
+/* ===========================
+   CONTENIDO
+=========================== */
 
 h1{font-size:26px;margin-bottom:6px;}
 .location{font-size:13px;opacity:.7;margin-bottom:10px;}
@@ -86,12 +112,15 @@ font-size:13px;
 }
 
 .detail-box{
-background:rgba(255,255,255,0.05);
+background:linear-gradient(145deg,#223b5a,#1a2f4a);
+box-shadow:
+inset 0 2px 6px rgba(255,255,255,0.05),
+inset 0 -4px 10px rgba(0,0,0,0.5);
 padding:10px;
 border-radius:15px;
 }
 
-.moon-phase{margin-top:12px;font-size:13px;opacity:.85;}
+.moon-phase{margin-top:12px;font-size:13px;opacity:.9;}
 
 .forecast{
 display:flex;
@@ -101,22 +130,27 @@ gap:6px;
 }
 
 .day{
-background:rgba(255,255,255,0.05);
+background:linear-gradient(145deg,#223b5a,#1a2f4a);
+box-shadow:
+inset 0 2px 5px rgba(255,255,255,0.05),
+inset 0 -5px 10px rgba(0,0,0,0.5);
 border-radius:18px;
 padding:10px 6px;
 font-size:11px;
 flex:1;
 }
 
-.day.rain{background:rgba(0,150,255,0.15);}
+.day.rain{
+background:linear-gradient(145deg,#244c7a,#1a3554);
+}
 
 .day-icon{font-size:16px;margin:4px 0;}
-.rain-prob{font-size:10px;opacity:.85;}
+.rain-prob{font-size:10px;opacity:.9;}
 
 .message{
 margin-top:25px;
 font-size:13px;
-opacity:.85;
+opacity:.9;
 font-style:italic;
 min-height:35px;
 transition:opacity .6s ease;
@@ -128,6 +162,8 @@ transition:opacity .6s ease;
 <body class="night">
 
 <div class="card">
+<div class="texture"></div>
+
 <h1>Shaiel 🌙</h1>
 <div class="location" id="location">Detectando ubicación...</div>
 <div class="counter" id="counter"></div>
@@ -150,33 +186,28 @@ transition:opacity .6s ease;
 
 <script>
 
-/* CONTADOR EXACTO DESDE 30 ENERO 2026 */
-const startDate = new Date(2026,0,30);
+/* CONTADOR EXACTO */
+const startDate=new Date(2026,0,30);
 
 function updateCounter(){
-const now = new Date();
+const now=new Date();
+let years=now.getFullYear()-startDate.getFullYear();
+let months=now.getMonth()-startDate.getMonth();
+let days=now.getDate()-startDate.getDate();
 
-let years = now.getFullYear() - startDate.getFullYear();
-let months = now.getMonth() - startDate.getMonth();
-let days = now.getDate() - startDate.getDate();
-
-if(days < 0){
+if(days<0){
 months--;
-const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-days += lastMonth.getDate();
+const lastMonth=new Date(now.getFullYear(),now.getMonth(),0);
+days+=lastMonth.getDate();
 }
+if(months<0){years--;months+=12;}
 
-if(months < 0){
-years--;
-months += 12;
-}
-
-document.getElementById("counter").innerText =
+document.getElementById("counter").innerText=
 `${years} años • ${months} meses • ${days} días contigo`;
 }
 updateCounter();
 
-/* FASE LUNAR */
+/* LUNA */
 function getMoonPhase(date){
 const lp=2551443;
 const new_moon=new Date(1970,0,7,20,35,0);
@@ -196,7 +227,7 @@ const phases=[
 return phases[index];
 }
 
-/* ICONO CLIMA */
+/* CLIMA */
 function getWeatherIcon(temp){
 if(temp>=32)return"🔥";
 if(temp>=25)return"☀️";
@@ -205,124 +236,10 @@ if(temp>=10)return"🌥";
 return"🌧";
 }
 
-/* GEO */
-function getLocation(){
-navigator.geolocation.getCurrentPosition(
-pos=>{
-reverseGeocode(pos.coords.latitude,pos.coords.longitude);
-getWeather(pos.coords.latitude,pos.coords.longitude);
-},
-()=>showError("Permiso de ubicación denegado.")
-);
-}
-
-async function reverseGeocode(lat,lon){
-try{
-const res=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
-const data=await res.json();
-const city=data.address.city||data.address.town||data.address.village||"";
-const suburb=data.address.suburb||data.address.neighbourhood||"";
-document.getElementById("location").innerText=`📍 ${suburb}, ${city}`;
-}catch{
-document.getElementById("location").innerText="📍 Ubicación desconocida";
-}
-}
-
-let climateCategory="";
-
-/* CLIMA */
-async function getWeather(lat,lon){
-const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,is_day&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
-
-try{
-const res=await fetch(url);
-const data=await res.json();
-updateWeather(data.current,data.daily);
-renderForecast(data.daily);
-setClimateCategory(data.current,data.daily);
-generateMessages();
-}catch{showError("No se pudo cargar el clima.");}
-}
-
-function updateWeather(c,d){
-
-let storm = d.precipitation_probability_max[0]>70 && c.wind_speed_10m>35;
-
-if(storm){
-document.body.className="storm";
-}else{
-document.body.className=c.is_day?"day":"night";
-}
-
-document.getElementById("mainTemp").innerText=Math.round(c.temperature_2m)+"°";
-document.getElementById("mainIcon").innerText=getWeatherIcon(c.temperature_2m);
-document.getElementById("feels").innerText=Math.round(c.apparent_temperature)+"°";
-document.getElementById("humidity").innerText=c.relative_humidity_2m+"%";
-document.getElementById("wind").innerText=Math.round(c.wind_speed_10m)+" km/h";
-document.getElementById("rainToday").innerText=d.precipitation_probability_max[0]+"%";
-
-let moon=getMoonPhase(new Date());
-document.getElementById("currentMoon").innerText=`${moon[0]} ${moon[1]}`;
-}
-
-function renderForecast(d){
-let html="";
-for(let i=1;i<=5;i++){
-let date=new Date(d.time[i]);
-let rain=d.precipitation_probability_max[i];
-let moon=getMoonPhase(date);
-html+=`
-<div class="day ${rain>40?'rain':''}">
-${date.toLocaleDateString("es-AR",{weekday:"short"})}
-<div class="day-icon">${getWeatherIcon(d.temperature_2m_max[i])}</div>
-${Math.round(d.temperature_2m_max[i])}°
-<br><small>${Math.round(d.temperature_2m_min[i])}°</small>
-<div class="rain-prob">🌧 ${rain}%</div>
-<div class="rain-prob">${moon[0]}</div>
-</div>`;
-}
-document.getElementById("forecast").innerHTML=html;
-}
-
-/* MENSAJES POR CLIMA */
-const messages={
-warm:["El calor del día se siente… pero no tanto como cuando te pienso.","El sol cae… pero mi deseo no."],
-mild:["Todo está en calma… como cuando tu mano toca la mía.","El aire es suave… como lo que guardo por ti."],
-rain:["La lluvia cae… y todo se vuelve más íntimo.","El mundo se moja… pero yo solo quiero acercarme más."],
-storm:["La tormenta ruge afuera… pero lo intenso está aquí dentro.","Relámpagos arriba… fuego debajo de mi piel."],
-night:["La noche se abre… y me invita a pensarte despacio.","Hay silencios que solo tú sabes llenar."],
-cold:["El aire es frío… pero tu recuerdo abriga.","Cuando todo se enfría… pienso en calor compartido."]
-};
-
-function setClimateCategory(c,d){
-if(d.precipitation_probability_max[0]>70 && c.wind_speed_10m>35){climateCategory="storm";}
-else if(d.precipitation_probability_max[0]>50){climateCategory="rain";}
-else if(c.temperature_2m>=30){climateCategory="warm";}
-else if(c.temperature_2m>=18){climateCategory="mild";}
-else if(!c.is_day){climateCategory="night";}
-else{climateCategory="cold";}
-}
-
-let msgIndex=0;
-function generateMessages(){rotateMessage();}
-function rotateMessage(){
-const msg=document.getElementById("message");
-msg.style.opacity=0;
-setTimeout(()=>{
-let arr=messages[climateCategory];
-msg.innerText=arr[msgIndex];
-msg.style.opacity=1;
-msgIndex=(msgIndex+1)%arr.length;
-},600);
-}
-
-setInterval(rotateMessage,30000);
-
 function showError(text){
 document.getElementById("error").innerText=text;
 }
 
-getLocation();
 </script>
 </body>
 </html>
