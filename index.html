@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Shaiel 🌷</title>
-
 <meta name="theme-color" content="#e8d7c8"/>
 
 <style>
@@ -17,10 +16,11 @@ display:flex;
 justify-content:center;
 align-items:center;
 min-height:100vh;
+transition:background 1s ease;
 }
 
 .card{
-width:380px;
+width:390px;
 background:#f4f0ec;
 border-radius:40px;
 padding:40px 25px;
@@ -30,43 +30,41 @@ animation:fadeIn 1s ease;
 }
 
 h1{
-font-size:32px;
-font-weight:600;
+font-size:30px;
 margin-bottom:8px;
-animation:slideUp 1s ease;
 }
 
 .counter{
 font-size:14px;
 opacity:.6;
-margin-bottom:25px;
+margin-bottom:20px;
 }
 
 .weather{
 font-size:14px;
 line-height:1.6;
-margin-bottom:25px;
+margin-bottom:20px;
+}
+
+.icon{
+font-size:28px;
+margin:10px 0;
+animation:float 4s ease-in-out infinite;
 }
 
 .forecast{
 display:flex;
 justify-content:space-between;
-gap:8px;
+gap:6px;
 margin-top:15px;
 }
 
 .day{
 background:#ece8e4;
 border-radius:20px;
-padding:12px 8px;
+padding:10px 6px;
 flex:1;
-font-size:12px;
-}
-
-.icon{
-font-size:22px;
-margin:6px 0;
-animation:float 3s ease-in-out infinite;
+font-size:11px;
 }
 
 .message{
@@ -74,22 +72,19 @@ margin-top:25px;
 font-size:14px;
 opacity:.75;
 font-style:italic;
+min-height:40px;
+transition:opacity .5s ease;
+}
+
+@keyframes float{
+0%{transform:translateY(0);}
+50%{transform:translateY(-5px);}
+100%{transform:translateY(0);}
 }
 
 @keyframes fadeIn{
 from{opacity:0;}
 to{opacity:1;}
-}
-
-@keyframes slideUp{
-from{transform:translateY(15px);opacity:0;}
-to{transform:translateY(0);opacity:1;}
-}
-
-@keyframes float{
-0%{transform:translateY(0);}
-50%{transform:translateY(-4px);}
-100%{transform:translateY(0);}
 }
 </style>
 </head>
@@ -102,8 +97,10 @@ to{transform:translateY(0);opacity:1;}
 0 años • 0 meses • 20 días contigo
 </div>
 
+<div class="icon" id="mainIcon">⛅</div>
+
 <div class="weather" id="weather">
-Cargando clima...
+Detectando ubicación...
 </div>
 
 <div class="forecast" id="forecast"></div>
@@ -113,68 +110,150 @@ Cargando clima...
 
 <script>
 
-// Coordenadas (puedes cambiar ciudad aquí)
-const lat = -34.6037; // Buenos Aires
-const lon = -58.3816;
+let currentMessages = [];
+let messageIndex = 0;
+let weatherCodeGlobal = 0;
 
-async function getWeather(){
-const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=auto`;
+function getLocation(){
+if(navigator.geolocation){
+navigator.geolocation.getCurrentPosition(pos=>{
+getWeather(pos.coords.latitude,pos.coords.longitude);
+});
+}else{
+document.getElementById("weather").innerText="No se pudo detectar ubicación.";
+}
+}
+
+async function getWeather(lat,lon){
+const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min&timezone=auto`;
 
 const res = await fetch(url);
 const data = await res.json();
 
-const current = data.current;
-const daily = data.daily;
+const c = data.current;
+const d = data.daily;
 
-document.getElementById("weather").innerHTML = `
-Temperatura actual: ${Math.round(current.temperature_2m)}°C<br>
-Sensación térmica: ${Math.round(current.apparent_temperature)}°C<br>
-Viento: ${Math.round(current.wind_speed_10m)} km/h<br>
-Humedad: ${current.relative_humidity_2m}%<br>
-Hoy: mínima ${Math.round(daily.temperature_2m_min[0])}°C • máxima ${Math.round(daily.temperature_2m_max[0])}°C
-`;
+weatherCodeGlobal = c.weather_code;
 
-renderForecast(daily);
-setMessage(current.temperature_2m, current.wind_speed_10m);
+updateIcon(c.weather_code,c.is_day);
+updateWeather(c,d);
+renderForecast(d);
+generateMessages(c.weather_code,c.temperature_2m,c.wind_speed_10m,c.is_day);
 }
 
-function renderForecast(daily){
-const container = document.getElementById("forecast");
-container.innerHTML="";
+function updateWeather(c,d){
+document.getElementById("weather").innerHTML=`
+Temperatura: ${Math.round(c.temperature_2m)}°C<br>
+Sensación térmica: ${Math.round(c.apparent_temperature)}°C<br>
+Viento: ${Math.round(c.wind_speed_10m)} km/h<br>
+Humedad: ${c.relative_humidity_2m}%<br>
+Hoy: mínima ${Math.round(d.temperature_2m_min[0])}° • máxima ${Math.round(d.temperature_2m_max[0])}°
+`;
+}
 
+function renderForecast(d){
+const container=document.getElementById("forecast");
+container.innerHTML="";
 for(let i=1;i<=5;i++){
-container.innerHTML += `
+container.innerHTML+=`
 <div class="day">
-${new Date(daily.time[i]).toLocaleDateString("es-AR",{weekday:"short"})}
-<div class="icon">⛅</div>
-${Math.round(daily.temperature_2m_max[i])}°<br>
-<small>${Math.round(daily.temperature_2m_min[i])}°</small>
+${new Date(d.time[i]).toLocaleDateString("es-AR",{weekday:"short"})}
+<div>⛅</div>
+${Math.round(d.temperature_2m_max[i])}°
+<br><small>${Math.round(d.temperature_2m_min[i])}°</small>
 </div>`;
 }
 }
 
-function setMessage(temp, wind){
-let message="";
+function updateIcon(code,isDay){
 
-if(temp<15){
-message="Hace frío… pero tu recuerdo abriga más que cualquier invierno.";
-}
-else if(temp>28){
-message="El calor es intenso… pero no tanto como lo que siento cuando pienso en ti.";
-}
-else if(wind>25){
-message="El viento sopla fuerte hoy… como si quisiera llevar mi voz hasta donde estás.";
+let icon="⛅";
+
+if(!isDay){
+icon = getMoonPhaseIcon();
+document.body.style.background="linear-gradient(135deg,#1f2235,#2c2f4a)";
 }
 else{
-message="El clima está tranquilo… como esos momentos contigo donde todo encuentra sentido.";
+document.body.style.background="linear-gradient(135deg,#e7d4c5,#f3e8dd)";
+if(code===0) icon="☀️";
+else if(code>=1 && code<=3) icon="⛅";
+else if(code>=51 && code<=67) icon="🌧";
+else if(code>=71 && code<=77) icon="❄️";
+else icon="☁️";
 }
 
-document.getElementById("message").innerText = message;
+document.getElementById("mainIcon").innerText=icon;
 }
 
-getWeather();
+function getMoonPhaseIcon(){
+const now = new Date();
+const synodicMonth = 29.53058867;
+const knownNewMoon = new Date("2024-01-11");
+const daysSince = (now - knownNewMoon) / (1000*60*60*24);
+const phase = (daysSince % synodicMonth) / synodicMonth;
+
+if(phase<0.03) return "🌑";
+if(phase<0.25) return "🌒";
+if(phase<0.27) return "🌓";
+if(phase<0.48) return "🌔";
+if(phase<0.52) return "🌕";
+if(phase<0.75) return "🌖";
+if(phase<0.77) return "🌗";
+return "🌘";
+}
+
+function generateMessages(code,temp,wind,isDay){
+
+let baseMessages=[];
+
+if(!isDay){
+baseMessages=[
+"La noche cae suave… y pienso en ti bajo esta misma luna.",
+"Hay algo en la oscuridad que me recuerda tu calma.",
+"La luna cambia… pero lo que siento permanece."
+];
+}
+else if(code===0){
+baseMessages=[
+"El sol brilla hoy… pero no más que tu recuerdo.",
+"La luz del día tiene tu nombre.",
+"Hay claridad afuera… y también dentro de mí cuando pienso en ti."
+];
+}
+else if(code>=51 && code<=67){
+baseMessages=[
+"La lluvia cae… como si el cielo también sintiera.",
+"Cada gota parece una palabra que no dije.",
+"El sonido del agua me acerca a ti."
+];
+}
+else{
+baseMessages=[
+"El cielo está cubierto… pero lo nuestro nunca lo está.",
+"Las nubes pasan… lo que siento se queda.",
+"Aunque el día sea gris, tú sigues siendo mi luz."
+];
+}
+
+currentMessages=baseMessages;
+messageIndex=0;
+rotateMessage();
+}
+
+function rotateMessage(){
+document.getElementById("message").style.opacity=0;
+setTimeout(()=>{
+document.getElementById("message").innerText=currentMessages[messageIndex];
+document.getElementById("message").style.opacity=1;
+messageIndex=(messageIndex+1)%currentMessages.length;
+},500);
+}
+
+setInterval(rotateMessage,30000); // cambia mensaje cada 30s
+setInterval(getLocation,1800000); // actualiza clima cada 30min
+
+getLocation();
 
 </script>
-
 </body>
 </html>
