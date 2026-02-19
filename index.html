@@ -10,33 +10,69 @@
 
 body{
 font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-background:linear-gradient(180deg,#0f1c2e,#14263d,#1d3557);
+background:linear-gradient(180deg,#0b1624,#102338,#163a59);
 display:flex;
 justify-content:center;
 align-items:center;
 min-height:100vh;
 overflow:hidden;
-color:#e8f0ff;
+color:#eaf3ff;
+position:relative;
 }
 
-/* 🌊 BURBUJAS */
+/* 🌊 Ondulación de luz */
+body::before{
+content:"";
+position:absolute;
+width:200%;
+height:200%;
+background:
+radial-gradient(circle at 40% 30%, rgba(255,255,255,0.04), transparent 40%),
+radial-gradient(circle at 70% 60%, rgba(255,255,255,0.03), transparent 45%);
+animation:waterLight 18s ease-in-out infinite alternate;
+}
+
+@keyframes waterLight{
+0%{transform:translate(-10%, -10%) scale(1);}
+100%{transform:translate(5%, 5%) scale(1.05);}
+}
+
+/* ✨ Reflejos tipo agua */
+.light{
+position:absolute;
+width:4px;
+height:4px;
+background:rgba(255,255,255,0.25);
+border-radius:50%;
+filter:blur(1px);
+animation:floatLight linear infinite;
+}
+
+@keyframes floatLight{
+0%{transform:translateY(0);opacity:0;}
+20%{opacity:0.5;}
+100%{transform:translateY(-120vh);opacity:0;}
+}
+
+/* 🫧 Burbujas grandes */
 .bubble{
 position:absolute;
-bottom:-50px;
-width:12px;
-height:12px;
+bottom:-60px;
+width:18px;
+height:18px;
 border-radius:50%;
-background:rgba(255,255,255,0.15);
-animation:rise linear infinite;
+background:rgba(255,255,255,0.08);
+filter:blur(2px);
+animation:rise 20s linear infinite;
 }
 
 @keyframes rise{
 0%{transform:translateY(0) scale(1);opacity:0;}
-10%{opacity:0.5;}
-100%{transform:translateY(-110vh) scale(1.4);opacity:0;}
+15%{opacity:0.4;}
+100%{transform:translateY(-120vh) scale(1.3);opacity:0;}
 }
 
-/* 🌫 TARJETA OCEÁNICA */
+/* 🌫 Tarjeta */
 .card{
 width:390px;
 padding:50px 30px;
@@ -45,18 +81,16 @@ position:relative;
 z-index:2;
 text-align:center;
 
-/* Azul translúcido */
 background:
-radial-gradient(circle at 30% 20%, rgba(255,255,255,0.08), transparent 40%),
-linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
 
 border:1px solid rgba(255,255,255,0.08);
 
 box-shadow:
-0 30px 60px rgba(0,0,0,0.4),
+0 30px 60px rgba(0,0,0,0.45),
 inset 0 1px 2px rgba(255,255,255,0.05);
 
-backdrop-filter:blur(10px);
+backdrop-filter:blur(14px);
 }
 
 h1{
@@ -74,12 +108,12 @@ margin-bottom:25px;
 .icon{
 font-size:28px;
 margin:12px 0;
-animation:floatIcon 5s ease-in-out infinite;
+animation:floatIcon 6s ease-in-out infinite;
 }
 
 @keyframes floatIcon{
 0%{transform:translateY(0);}
-50%{transform:translateY(-6px);}
+50%{transform:translateY(-5px);}
 100%{transform:translateY(0);}
 }
 
@@ -116,14 +150,24 @@ transition:opacity .6s ease;
 </head>
 <body>
 
-<!-- 🌊 BURBUJAS DINÁMICAS -->
 <script>
-for(let i=0;i<18;i++){
+/* ✨ Reflejos suaves */
+for(let i=0;i<25;i++){
+let l=document.createElement("div");
+l.className="light";
+l.style.left=Math.random()*100+"vw";
+l.style.animationDuration=(18+Math.random()*15)+"s";
+l.style.animationDelay=Math.random()*10+"s";
+document.body.appendChild(l);
+}
+
+/* 🫧 Burbujas lentas */
+for(let i=0;i<8;i++){
 let b=document.createElement("div");
 b.className="bubble";
 b.style.left=Math.random()*100+"vw";
-b.style.animationDuration=(12+Math.random()*10)+"s";
-b.style.animationDelay=Math.random()*10+"s";
+b.style.animationDuration=(18+Math.random()*10)+"s";
+b.style.animationDelay=Math.random()*5+"s";
 document.body.appendChild(b);
 }
 </script>
@@ -135,7 +179,7 @@ document.body.appendChild(b);
 0 años • 0 meses • 20 días contigo
 </div>
 
-<div class="icon" id="mainIcon">🌫</div>
+<div class="icon" id="mainIcon">🌊</div>
 
 <div class="weather" id="weather">
 Cargando clima...
@@ -158,7 +202,7 @@ getWeather(pos.coords.latitude,pos.coords.longitude);
 }
 
 async function getWeather(lat,lon){
-const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min&timezone=auto`;
+const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,is_day&daily=temperature_2m_max,temperature_2m_min&timezone=auto`;
 
 const res=await fetch(url);
 const data=await res.json();
@@ -195,14 +239,14 @@ function generateMessages(isDay){
 if(!isDay){
 currentMessages=[
 "La ciudad duerme… y yo pienso en ti.",
-"La noche es profunda… pero no más que lo que siento.",
-"Bajo esta luz azul… te recuerdo en silencio."
+"El mar es oscuro… pero no más que este silencio.",
+"Bajo esta luz azul… todo se vuelve recuerdo."
 ];
 }else{
 currentMessages=[
-"El día flota suave… como el recuerdo de tu voz.",
-"Hay calma en el aire… y también en lo que siento.",
-"Todo parece moverse lento… excepto lo que guardo por ti."
+"El aire flota suave… como tu nombre en mi mente.",
+"Hay calma en el cielo… y en lo que siento.",
+"Todo parece ir más lento… menos lo que guardo por ti."
 ];
 }
 rotateMessage();
