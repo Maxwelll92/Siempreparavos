@@ -32,23 +32,49 @@ animation:flash 7s infinite;
 97%{filter:brightness(.6);}
 }
 
+/* TARJETA CON TEXTURA Y PROFUNDIDAD */
 .card{
 width:400px;
 padding:45px 30px;
 border-radius:40px;
 text-align:center;
-background:linear-gradient(160deg,#1b2e47,#243f63 60%,#1b2e47);
-box-shadow:0 40px 80px rgba(0,0,0,0.5);
+position:relative;
+overflow:hidden;
+
+background:
+radial-gradient(120% 120% at 20% 10%, rgba(255,255,255,0.08), transparent 60%),
+radial-gradient(100% 100% at 80% 90%, rgba(0,0,0,0.25), transparent 60%),
+linear-gradient(160deg,#1b2e47,#243f63 60%,#1b2e47);
+
+box-shadow:
+0 40px 80px rgba(0,0,0,0.55),
+inset 0 0 40px rgba(255,255,255,0.04);
+}
+
+.card::before{
+content:"";
+position:absolute;
+top:-50%;
+left:-50%;
+width:200%;
+height:200%;
+background:
+radial-gradient(circle at 30% 40%, rgba(255,255,255,0.05), transparent 40%),
+radial-gradient(circle at 70% 60%, rgba(255,255,255,0.04), transparent 40%);
+animation:waveMove 18s infinite linear;
+opacity:.6;
+pointer-events:none;
+}
+
+@keyframes waveMove{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
 }
 
 h1{font-size:26px;margin-bottom:6px;}
-
 .location{font-size:13px;opacity:.7;margin-bottom:10px;}
-
 .counter{font-size:12px;opacity:.6;margin-bottom:20px;}
-
 .icon{font-size:36px;margin:5px 0;}
-
 .main-temp{font-size:42px;font-weight:600;margin:10px 0 5px 0;}
 
 .details{
@@ -65,7 +91,7 @@ padding:10px;
 border-radius:15px;
 }
 
-.moon-phase{margin-top:12px;font-size:13px;opacity:.8;}
+.moon-phase{margin-top:12px;font-size:13px;opacity:.85;}
 
 .forecast{
 display:flex;
@@ -85,13 +111,12 @@ flex:1;
 .day.rain{background:rgba(0,150,255,0.15);}
 
 .day-icon{font-size:16px;margin:4px 0;}
-
-.rain-prob{font-size:10px;opacity:.8;}
+.rain-prob{font-size:10px;opacity:.85;}
 
 .message{
 margin-top:25px;
 font-size:13px;
-opacity:.8;
+opacity:.85;
 font-style:italic;
 min-height:35px;
 transition:opacity .6s ease;
@@ -104,7 +129,6 @@ transition:opacity .6s ease;
 
 <div class="card">
 <h1>Shaiel 🌙</h1>
-
 <div class="location" id="location">Detectando ubicación...</div>
 <div class="counter" id="counter"></div>
 
@@ -120,24 +144,35 @@ transition:opacity .6s ease;
 
 <div class="moon-phase" id="currentMoon"></div>
 <div class="forecast" id="forecast"></div>
-
 <div class="message" id="message"></div>
 <div class="error" id="error"></div>
 </div>
 
 <script>
 
-/* CONTADOR */
-const startDate=new Date(2025,4,30);
+/* CONTADOR EXACTO DESDE 30 ENERO 2026 */
+const startDate = new Date(2026,0,30);
+
 function updateCounter(){
-const now=new Date();
-let y=now.getFullYear()-startDate.getFullYear();
-let m=now.getMonth()-startDate.getMonth();
-let d=now.getDate()-startDate.getDate();
-if(d<0){m--;d+=30;}
-if(m<0){y--;m+=12;}
-document.getElementById("counter").innerText=
-`${y} años • ${m} meses • ${d} días contigo`;
+const now = new Date();
+
+let years = now.getFullYear() - startDate.getFullYear();
+let months = now.getMonth() - startDate.getMonth();
+let days = now.getDate() - startDate.getDate();
+
+if(days < 0){
+months--;
+const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+days += lastMonth.getDate();
+}
+
+if(months < 0){
+years--;
+months += 12;
+}
+
+document.getElementById("counter").innerText =
+`${years} años • ${months} meses • ${days} días contigo`;
 }
 updateCounter();
 
@@ -161,7 +196,7 @@ const phases=[
 return phases[index];
 }
 
-/* ICONO */
+/* ICONO CLIMA */
 function getWeatherIcon(temp){
 if(temp>=32)return"🔥";
 if(temp>=25)return"☀️";
@@ -181,7 +216,6 @@ getWeather(pos.coords.latitude,pos.coords.longitude);
 );
 }
 
-/* CIUDAD */
 async function reverseGeocode(lat,lon){
 try{
 const res=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
@@ -194,11 +228,12 @@ document.getElementById("location").innerText="📍 Ubicación desconocida";
 }
 }
 
-/* CLIMA */
 let climateCategory="";
 
+/* CLIMA */
 async function getWeather(lat,lon){
 const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,is_day&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
+
 try{
 const res=await fetch(url);
 const data=await res.json();
@@ -230,7 +265,6 @@ let moon=getMoonPhase(new Date());
 document.getElementById("currentMoon").innerText=`${moon[0]} ${moon[1]}`;
 }
 
-/* FORECAST + LUNA */
 function renderForecast(d){
 let html="";
 for(let i=1;i<=5;i++){
@@ -250,61 +284,27 @@ ${Math.round(d.temperature_2m_max[i])}°
 document.getElementById("forecast").innerHTML=html;
 }
 
-/* 6 CATEGORÍAS PSICOLÓGICAS */
+/* MENSAJES POR CLIMA */
 const messages={
-warm:[
-"El calor del día se siente… pero no tanto como cuando te pienso.",
-"Hay algo en esta luz que me recuerda a tu forma de mirarme.",
-"El sol cae… pero mi deseo no."
-],
-mild:[
-"Todo está en calma… como cuando tu mano toca la mía.",
-"El aire es suave… como lo que guardo por ti.",
-"El día respira lento… y yo contigo."
-],
-rain:[
-"La lluvia cae… y todo se vuelve más íntimo.",
-"El mundo se moja… pero yo solo pienso en acercarme más.",
-"Hay algo en la lluvia que invita a quedarse."
-],
-storm:[
-"La tormenta ruge afuera… pero lo intenso está aquí dentro.",
-"El cielo se quiebra… como mi autocontrol cuando estás cerca.",
-"Relámpagos arriba… fuego debajo de mi piel."
-],
-night:[
-"La noche se abre… y me invita a pensarte despacio.",
-"La luna observa… y yo también.",
-"Hay silencios que solo tú sabes llenar."
-],
-cold:[
-"El aire es frío… pero tu recuerdo abriga.",
-"El gris del cielo hace que quiera acercarme más.",
-"Cuando todo se enfría… pienso en calor compartido."
-]
+warm:["El calor del día se siente… pero no tanto como cuando te pienso.","El sol cae… pero mi deseo no."],
+mild:["Todo está en calma… como cuando tu mano toca la mía.","El aire es suave… como lo que guardo por ti."],
+rain:["La lluvia cae… y todo se vuelve más íntimo.","El mundo se moja… pero yo solo quiero acercarme más."],
+storm:["La tormenta ruge afuera… pero lo intenso está aquí dentro.","Relámpagos arriba… fuego debajo de mi piel."],
+night:["La noche se abre… y me invita a pensarte despacio.","Hay silencios que solo tú sabes llenar."],
+cold:["El aire es frío… pero tu recuerdo abriga.","Cuando todo se enfría… pienso en calor compartido."]
 };
 
 function setClimateCategory(c,d){
-if(d.precipitation_probability_max[0]>70 && c.wind_speed_10m>35){
-climateCategory="storm";
-}else if(d.precipitation_probability_max[0]>50){
-climateCategory="rain";
-}else if(c.temperature_2m>=30){
-climateCategory="warm";
-}else if(c.temperature_2m>=18){
-climateCategory="mild";
-}else if(!c.is_day){
-climateCategory="night";
-}else{
-climateCategory="cold";
-}
+if(d.precipitation_probability_max[0]>70 && c.wind_speed_10m>35){climateCategory="storm";}
+else if(d.precipitation_probability_max[0]>50){climateCategory="rain";}
+else if(c.temperature_2m>=30){climateCategory="warm";}
+else if(c.temperature_2m>=18){climateCategory="mild";}
+else if(!c.is_day){climateCategory="night";}
+else{climateCategory="cold";}
 }
 
 let msgIndex=0;
-function generateMessages(){
-rotateMessage();
-}
-
+function generateMessages(){rotateMessage();}
 function rotateMessage(){
 const msg=document.getElementById("message");
 msg.style.opacity=0;
@@ -323,7 +323,6 @@ document.getElementById("error").innerText=text;
 }
 
 getLocation();
-
 </script>
 </body>
 </html>
