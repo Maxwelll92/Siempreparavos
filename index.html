@@ -10,15 +10,23 @@
 
 body{
 font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-background:linear-gradient(180deg,#0f1c2e,#1d3557);
 display:flex;
 justify-content:center;
 align-items:center;
 min-height:100vh;
 color:#eaf3ff;
+transition:background 1.2s ease;
 }
 
-/* 💎 TARJETA VISTOSA */
+/* Día / Noche dinámico */
+body.day{
+background:linear-gradient(180deg,#1d3557,#457b9d);
+}
+
+body.night{
+background:linear-gradient(180deg,#0f1c2e,#1b263b);
+}
+
 .card{
 width:390px;
 padding:55px 35px;
@@ -26,18 +34,17 @@ border-radius:45px;
 position:relative;
 text-align:center;
 overflow:hidden;
-
-/* degradado profundo */
-background:
-linear-gradient(160deg,#1b2e47,#243f63 60%,#1b2e47);
-
+background:linear-gradient(160deg,#1b2e47,#243f63 60%,#1b2e47);
 border:1px solid rgba(255,255,255,0.08);
-
 box-shadow:
 0 40px 80px rgba(0,0,0,0.5),
 inset 0 0 40px rgba(255,255,255,0.03);
+animation:fadeIn 1.5s ease;
+}
 
-/* luz interna */
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;transform:translateY(0);}
 }
 
 .card::before{
@@ -49,40 +56,19 @@ width:160%;
 height:160%;
 background:radial-gradient(circle at center, rgba(255,255,255,0.06), transparent 60%);
 opacity:.6;
+pointer-events:none;
 }
 
-h1{
-font-size:30px;
-margin-bottom:8px;
-letter-spacing:1px;
-}
+h1{font-size:30px;margin-bottom:8px;letter-spacing:1px;}
 
-.counter{
-font-size:13px;
-opacity:.6;
-margin-bottom:25px;
-}
+.counter{font-size:13px;opacity:.6;margin-bottom:25px;}
 
-.icon{
-font-size:32px;
-margin:15px 0;
-}
+.icon{font-size:34px;margin:15px 0;transition:transform .6s ease;}
 
-.weather{
-font-size:15px;
-line-height:1.8;
-opacity:.9;
-margin-bottom:10px;
-}
+.weather{font-size:15px;line-height:1.8;opacity:.9;margin-bottom:10px;}
 
-/* 🌙 LUNA ACTUAL */
-.moon-phase{
-margin-top:8px;
-font-size:13px;
-opacity:.7;
-}
+.moon-phase{margin-top:8px;font-size:13px;opacity:.7;}
 
-/* 📅 Pronóstico */
 .forecast{
 display:flex;
 justify-content:space-between;
@@ -101,18 +87,12 @@ transition:.3s;
 
 .day:hover{
 background:rgba(255,255,255,0.08);
+transform:translateY(-3px);
 }
 
-.day-icon{
-font-size:18px;
-margin:4px 0;
-}
+.day-icon{font-size:18px;margin:4px 0;}
 
-.day-moon{
-font-size:12px;
-margin-top:4px;
-opacity:.6;
-}
+.day-moon{font-size:12px;margin-top:4px;opacity:.6;}
 
 .message{
 margin-top:28px;
@@ -120,18 +100,23 @@ font-size:14px;
 opacity:.75;
 font-style:italic;
 min-height:40px;
-transition:opacity .6s ease;
+transition:opacity .8s ease, transform .8s ease;
+}
+
+.error{
+margin-top:15px;
+font-size:13px;
+opacity:.7;
+color:#ffb3b3;
 }
 </style>
 </head>
-<body>
+<body class="night">
 
 <div class="card">
 <h1>Shaiel 🌙</h1>
 
-<div class="counter">
-0 años • 0 meses • 20 días contigo
-</div>
+<div class="counter" id="counter"></div>
 
 <div class="icon" id="mainIcon">⛅</div>
 
@@ -144,16 +129,50 @@ Cargando clima...
 <div class="forecast" id="forecast"></div>
 
 <div class="message" id="message"></div>
+
+<div class="error" id="error"></div>
 </div>
 
 <script>
 
-/* 🌙 Cálculo simple fase lunar */
+/* ===========================
+   CONTADOR AUTOMÁTICO
+=========================== */
+
+const startDate = new Date(2025, 4, 30); // <-- CAMBIA ESTA FECHA
+
+function updateCounter(){
+const now = new Date();
+let years = now.getFullYear() - startDate.getFullYear();
+let months = now.getMonth() - startDate.getMonth();
+let days = now.getDate() - startDate.getDate();
+
+if(days < 0){
+months--;
+days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+}
+if(months < 0){
+years--;
+months += 12;
+}
+
+document.getElementById("counter").innerText=
+`${years} años • ${months} meses • ${days} días contigo`;
+}
+
+updateCounter();
+
+/* ===========================
+   FASE LUNAR CORREGIDA
+=========================== */
+
 function getMoonPhase(date){
-const lp=2551443;
-const new_moon=new Date(1970,0,7,20,35,0);
-const phase=((date-new_moon)/1000)%lp;
-const index=Math.floor(phase/(lp/8));
+const lp = 2551443;
+const new_moon = new Date(1970,0,7,20,35,0);
+let phase = ((date - new_moon) / 1000) % lp;
+if(phase < 0) phase += lp;
+const index = Math.floor(phase / (lp/8));
+
 const phases=[
 "🌑 Luna Nueva",
 "🌒 Creciente",
@@ -167,35 +186,60 @@ const phases=[
 return phases[index];
 }
 
-/* 🌤 Iconos por código */
+/* ===========================
+   ICONOS CLIMA
+=========================== */
+
 function getWeatherIcon(temp){
-if(temp >= 30) return "☀️";
-if(temp >= 20) return "⛅";
+if(temp >= 32) return "🔥";
+if(temp >= 25) return "☀️";
+if(temp >= 18) return "⛅";
 if(temp >= 10) return "🌥";
 return "🌧";
 }
 
-let currentMessages=[];
-let messageIndex=0;
+/* ===========================
+   GEOLOCALIZACIÓN SEGURA
+=========================== */
 
 function getLocation(){
-navigator.geolocation.getCurrentPosition(pos=>{
-getWeather(pos.coords.latitude,pos.coords.longitude);
-});
+if(!navigator.geolocation){
+showError("Geolocalización no soportada.");
+return;
 }
 
+navigator.geolocation.getCurrentPosition(
+pos=>getWeather(pos.coords.latitude,pos.coords.longitude),
+()=>showError("Permiso de ubicación denegado.")
+);
+}
+
+/* ===========================
+   CLIMA
+=========================== */
+
 async function getWeather(lat,lon){
+
 const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,is_day&daily=temperature_2m_max,temperature_2m_min&timezone=auto`;
 
+try{
 const res=await fetch(url);
+if(!res.ok) throw new Error();
 const data=await res.json();
 
 updateWeather(data.current,data.daily);
 renderForecast(data.daily);
 generateMessages(data.current.is_day);
+
+}catch{
+showError("No se pudo cargar el clima.");
+}
 }
 
 function updateWeather(c,d){
+
+document.body.className = c.is_day ? "day" : "night";
+
 document.getElementById("weather").innerHTML=`
 Temperatura: ${Math.round(c.temperature_2m)}°C<br>
 Sensación: ${Math.round(c.apparent_temperature)}°C<br>
@@ -204,16 +248,23 @@ Humedad: ${c.relative_humidity_2m}%<br>
 Hoy: ${Math.round(d.temperature_2m_min[0])}° • ${Math.round(d.temperature_2m_max[0])}°
 `;
 
-document.getElementById("mainIcon").innerText=getWeatherIcon(c.temperature_2m);
+const icon=document.getElementById("mainIcon");
+icon.innerText=getWeatherIcon(c.temperature_2m);
+icon.style.transform="scale(1.2)";
+setTimeout(()=>icon.style.transform="scale(1)",300);
+
 document.getElementById("currentMoon").innerText=getMoonPhase(new Date());
 }
 
+/* ===========================
+   FORECAST OPTIMIZADO
+=========================== */
+
 function renderForecast(d){
-const container=document.getElementById("forecast");
-container.innerHTML="";
+let html="";
 for(let i=1;i<=5;i++){
 let date=new Date(d.time[i]);
-container.innerHTML+=`
+html+=`
 <div class="day">
 ${date.toLocaleDateString("es-AR",{weekday:"short"})}
 <div class="day-icon">${getWeatherIcon(d.temperature_2m_max[i])}</div>
@@ -222,33 +273,56 @@ ${Math.round(d.temperature_2m_max[i])}°
 <div class="day-moon">${getMoonPhase(date).split(" ")[0]}</div>
 </div>`;
 }
+document.getElementById("forecast").innerHTML=html;
 }
 
+/* ===========================
+   MENSAJES DINÁMICOS
+=========================== */
+
+let currentMessages=[];
+let messageIndex=0;
+
 function generateMessages(isDay){
-if(!isDay){
-currentMessages=[
-"La noche cae suave… como lo que siento.",
-"La luna cambia… pero lo nuestro no.",
-"Todo parece callado… menos mi pensamiento."
-];
-}else{
-currentMessages=[
+currentMessages = isDay ? [
 "El día respira lento… como tú en mi mente.",
 "Hay luz en el cielo… y también aquí dentro.",
-"Todo parece moverse lento… excepto lo que guardo por ti."
+"Todo parece moverse… menos lo que siento.",
+"El sol brilla… pero no tanto como tú."
+] : [
+"La noche cae suave… como lo que siento.",
+"La luna cambia… pero lo nuestro no.",
+"Todo parece callado… menos mi pensamiento.",
+"La oscuridad es bella… pero tu luz más."
 ];
-}
+
 rotateMessage();
 }
 
 function rotateMessage(){
-document.getElementById("message").style.opacity=0;
+const msg=document.getElementById("message");
+msg.style.opacity=0;
+msg.style.transform="translateY(10px)";
+
 setTimeout(()=>{
-document.getElementById("message").innerText=currentMessages[messageIndex];
-document.getElementById("message").style.opacity=1;
+msg.innerText=currentMessages[messageIndex];
+msg.style.opacity=1;
+msg.style.transform="translateY(0)";
 messageIndex=(messageIndex+1)%currentMessages.length;
-},600);
+},800);
 }
+
+/* ===========================
+   ERRORES
+=========================== */
+
+function showError(text){
+document.getElementById("error").innerText=text;
+}
+
+/* ===========================
+   AUTO REFRESH
+=========================== */
 
 setInterval(rotateMessage,30000);
 setInterval(getLocation,1800000);
