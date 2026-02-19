@@ -3,418 +3,178 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#f3e5f5">
-<title>Shaiel 🌸</title>
+<title>Shaiel 🌷</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Quicksand:wght@400;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#e8d7c8"/>
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
 body{
-margin:0;
-min-height:100vh;
+font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+background:linear-gradient(135deg,#e7d4c5,#f3e8dd);
 display:flex;
 justify-content:center;
 align-items:center;
-font-family:'Quicksand',sans-serif;
-overflow:hidden;
-transition:background 2s ease, filter 2s ease;
-background:#f3e5f5;
+min-height:100vh;
 }
 
-.container{
-position:relative;
-z-index:2;
-background:rgba(255,255,255,0.88);
-backdrop-filter:blur(20px);
-padding:40px;
-border-radius:35px;
+.card{
+width:380px;
+background:#f4f0ec;
+border-radius:40px;
+padding:40px 25px;
 text-align:center;
-box-shadow:0 20px 50px rgba(0,0,0,0.15);
-max-width:520px;
-width:90%;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+animation:fadeIn 1s ease;
 }
 
 h1{
-font-family:'Playfair Display',serif;
-font-size:26px;
+font-size:32px;
+font-weight:600;
 margin-bottom:8px;
+animation:slideUp 1s ease;
 }
 
-#contador{
-font-family:'Cormorant Garamond',serif;
-font-size:15px;
-margin-bottom:12px;
-opacity:.8;
+.counter{
+font-size:14px;
+opacity:.6;
+margin-bottom:25px;
 }
 
-/* CONTENEDOR CLIMA */
-#climaVisual{
-height:120px;
-display:flex;
-justify-content:center;
-align-items:center;
-margin:15px 0;
+.weather{
+font-size:14px;
+line-height:1.6;
+margin-bottom:25px;
 }
 
-.clima-wrapper{
-position:relative;
-width:110px;
-height:110px;
-display:flex;
-justify-content:center;
-align-items:center;
-}
-
-/* SOL */
-.sol{
-width:60px;
-height:60px;
-border-radius:50%;
-background:radial-gradient(circle,#ffd54f,#ff9800);
-animation:rotar 12s linear infinite, glow 2s ease-in-out infinite alternate;
-}
-
-@keyframes rotar{
-from{transform:rotate(0deg);}
-to{transform:rotate(360deg);}
-}
-
-@keyframes glow{
-from{box-shadow:0 0 10px #ffcc80;}
-to{box-shadow:0 0 35px #ff9800;}
-}
-
-/* NUBE */
-.nube{
-width:75px;
-height:45px;
-background:#cfcfcf;
-border-radius:40px;
-position:absolute;
-}
-
-/* LLUVIA */
-.lluvia{
-position:absolute;
-top:60px;
-width:3px;
-height:15px;
-background:#90caf9;
-animation:llover .8s linear infinite;
-}
-
-@keyframes llover{
-from{transform:translateY(0);}
-to{transform:translateY(30px);opacity:0;}
-}
-
-/* NIEVE */
-.copo{
-position:absolute;
-top:60px;
-font-size:12px;
-animation:nevar 3s linear infinite;
-}
-
-@keyframes nevar{
-from{transform:translateY(0);}
-to{transform:translateY(30px);opacity:0;}
-}
-
-/* VIENTO */
-.vientoIcon{
-display:inline-block;
-margin-left:6px;
-animation:moverViento 2s ease-in-out infinite;
-}
-
-@keyframes moverViento{
-0%{transform:translateX(0);}
-50%{transform:translateX(6px);}
-100%{transform:translateX(0);}
-}
-
-/* PRONÓSTICO */
-.dias{
+.forecast{
 display:flex;
 justify-content:space-between;
-margin-top:18px;
-gap:10px;
+gap:8px;
+margin-top:15px;
 }
 
-.dia{
+.day{
+background:#ece8e4;
+border-radius:20px;
+padding:12px 8px;
 flex:1;
-background:rgba(255,255,255,0.6);
-border-radius:18px;
-padding:10px 6px;
-font-size:13px;
-transition:transform .3s ease, background .3s ease;
+font-size:12px;
 }
 
-.dia:hover{
-transform:translateY(-4px);
-background:rgba(255,255,255,0.8);
-}
-
-.dia .icono{
+.icon{
 font-size:22px;
 margin:6px 0;
+animation:float 3s ease-in-out infinite;
 }
 
-.min{
-opacity:.6;
+.message{
+margin-top:25px;
+font-size:14px;
+opacity:.75;
+font-style:italic;
 }
 
-.burbuja{
-margin-top:18px;
-padding:15px 20px;
-border-radius:30px;
-font-family:'Cormorant Garamond',serif;
-font-size:18px;
-transition:opacity .4s ease;
-}
-
-/* NOCHE */
-#efectos{
-position:absolute;
-inset:0;
-pointer-events:none;
-z-index:1;
-}
-
-.estrella{
-position:absolute;
-width:2px;
-height:2px;
-background:white;
-border-radius:50%;
-animation:parpadear 2s infinite alternate;
-}
-
-@keyframes parpadear{
-from{opacity:.3;}
+@keyframes fadeIn{
+from{opacity:0;}
 to{opacity:1;}
+}
+
+@keyframes slideUp{
+from{transform:translateY(15px);opacity:0;}
+to{transform:translateY(0);opacity:1;}
+}
+
+@keyframes float{
+0%{transform:translateY(0);}
+50%{transform:translateY(-4px);}
+100%{transform:translateY(0);}
 }
 </style>
 </head>
-
 <body>
 
-<div id="efectos"></div>
-
-<div class="container">
+<div class="card">
 <h1>Shaiel 🌷</h1>
-<div id="contador"></div>
-<div id="climaVisual"></div>
-<div id="temperatura"></div>
-<div id="sensacion"></div>
-<div id="minmaxHoy"></div>
-<div id="pronosticoDias" class="dias"></div>
-<div id="mensaje" class="burbuja"></div>
+
+<div class="counter">
+0 años • 0 meses • 20 días contigo
+</div>
+
+<div class="weather" id="weather">
+Cargando clima...
+</div>
+
+<div class="forecast" id="forecast"></div>
+
+<div class="message" id="message"></div>
 </div>
 
 <script>
 
-const inicio=new Date("2026-01-30");
+// Coordenadas (puedes cambiar ciudad aquí)
+const lat = -34.6037; // Buenos Aires
+const lon = -58.3816;
 
-function actualizarContador(){
-const hoy=new Date();
-if(hoy<inicio){
-document.getElementById("contador").textContent="Aún no comienza ✨";
-return;
-}
-let años=hoy.getFullYear()-inicio.getFullYear();
-let meses=hoy.getMonth()-inicio.getMonth();
-let dias=hoy.getDate()-inicio.getDate();
-if(dias<0){meses--;dias+=new Date(hoy.getFullYear(),hoy.getMonth(),0).getDate();}
-if(meses<0){años--;meses+=12;}
-document.getElementById("contador").textContent=
-`${años} años • ${meses} meses • ${dias} días contigo`;
-}
-actualizarContador();
-setInterval(actualizarContador,86400000);
+async function getWeather(){
+const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=auto`;
 
-let latGlobal,lonGlobal,intervaloMensajes;
+const res = await fetch(url);
+const data = await res.json();
 
-function iniciarUbicacion(){
-navigator.geolocation.getCurrentPosition(pos=>{
-latGlobal=pos.coords.latitude;
-lonGlobal=pos.coords.longitude;
-obtenerClima();
-setInterval(obtenerClima,1800000);
-});
-}
+const current = data.current;
+const daily = data.daily;
 
-async function obtenerClima(){
-try{
-const res=await fetch(
-`https://api.open-meteo.com/v1/forecast?latitude=${latGlobal}&longitude=${lonGlobal}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&forecast_days=4&timezone=auto`
-);
-const data=await res.json();
-
-const current=data.current_weather;
-const daily=data.daily;
-
-const temp=Math.round(current.temperature);
-const viento=Math.round(current.windspeed);
-
-document.getElementById("temperatura").textContent=
-`Temperatura actual: ${temp}°C`;
-
-document.getElementById("sensacion").innerHTML=
-`Sensación térmica: ${temp}°C 
-<span class="vientoIcon">🌬️ ${viento} km/h</span>`;
-
-renderClimaVisual(current.weathercode);
-
-const minHoy=Math.round(daily.temperature_2m_min[0]);
-const maxHoy=Math.round(daily.temperature_2m_max[0]);
-document.getElementById("minmaxHoy").textContent=
-`Hoy: mínima ${minHoy}°C • máxima ${maxHoy}°C`;
-
-let html="";
-for(let i=1;i<=3;i++){
-const fecha=new Date(daily.time[i]+"T00:00:00");
-const nombreDia=fecha.toLocaleDateString("es-ES",{weekday:"short"});
-const min=Math.round(daily.temperature_2m_min[i]);
-const max=Math.round(daily.temperature_2m_max[i]);
-const icono=obtenerIcono(daily.weathercode[i]);
-
-html+=`
-<div class="dia">
-<div>${nombreDia}</div>
-<div class="icono">${icono}</div>
-<div>${max}°</div>
-<div class="min">${min}°</div>
-</div>
+document.getElementById("weather").innerHTML = `
+Temperatura actual: ${Math.round(current.temperature_2m)}°C<br>
+Sensación térmica: ${Math.round(current.apparent_temperature)}°C<br>
+Viento: ${Math.round(current.wind_speed_10m)} km/h<br>
+Humedad: ${current.relative_humidity_2m}%<br>
+Hoy: mínima ${Math.round(daily.temperature_2m_min[0])}°C • máxima ${Math.round(daily.temperature_2m_max[0])}°C
 `;
-}
-document.getElementById("pronosticoDias").innerHTML=html;
 
-cambiarFondo(temp);
-detectarNoche(daily.sunrise[0],daily.sunset[0]);
-rotarMensajes(temp);
-
-}catch(e){
-console.log(e);
-document.getElementById("mensaje").textContent=
-"No pude actualizar el clima, pero sigo aquí 💗";
-}
+renderForecast(daily);
+setMessage(current.temperature_2m, current.wind_speed_10m);
 }
 
-function renderClimaVisual(code){
-const cont=document.getElementById("climaVisual");
-cont.innerHTML="";
-const wrapper=document.createElement("div");
-wrapper.className="clima-wrapper";
+function renderForecast(daily){
+const container = document.getElementById("forecast");
+container.innerHTML="";
 
-if(code===0){
-const sol=document.createElement("div");
-sol.className="sol";
-wrapper.appendChild(sol);
-}
-else if(code>=51&&code<=67){
-const nube=document.createElement("div");
-nube.className="nube";
-wrapper.appendChild(nube);
-for(let i=0;i<6;i++){
-const drop=document.createElement("div");
-drop.className="lluvia";
-drop.style.left=(25+i*10)+"px";
-wrapper.appendChild(drop);
+for(let i=1;i<=5;i++){
+container.innerHTML += `
+<div class="day">
+${new Date(daily.time[i]).toLocaleDateString("es-AR",{weekday:"short"})}
+<div class="icon">⛅</div>
+${Math.round(daily.temperature_2m_max[i])}°<br>
+<small>${Math.round(daily.temperature_2m_min[i])}°</small>
+</div>`;
 }
 }
-else if(code>=71&&code<=77){
-const nube=document.createElement("div");
-nube.className="nube";
-wrapper.appendChild(nube);
-for(let i=0;i<5;i++){
-const snow=document.createElement("div");
-snow.className="copo";
-snow.style.left=(25+i*12)+"px";
-snow.textContent="❄";
-wrapper.appendChild(snow);
+
+function setMessage(temp, wind){
+let message="";
+
+if(temp<15){
+message="Hace frío… pero tu recuerdo abriga más que cualquier invierno.";
 }
+else if(temp>28){
+message="El calor es intenso… pero no tanto como lo que siento cuando pienso en ti.";
+}
+else if(wind>25){
+message="El viento sopla fuerte hoy… como si quisiera llevar mi voz hasta donde estás.";
 }
 else{
-const nube=document.createElement("div");
-nube.className="nube";
-wrapper.appendChild(nube);
+message="El clima está tranquilo… como esos momentos contigo donde todo encuentra sentido.";
 }
 
-cont.appendChild(wrapper);
+document.getElementById("message").innerText = message;
 }
 
-function obtenerIcono(code){
-if(code===0) return "☀️";
-if(code>=1&&code<=3) return "⛅";
-if(code>=45&&code<=48) return "🌫️";
-if(code>=51&&code<=67) return "🌧️";
-if(code>=71&&code<=77) return "❄️";
-if(code>=80&&code<=82) return "🌦️";
-if(code>=95) return "⛈️";
-return "🌤️";
-}
-
-function cambiarFondo(temp){
-if(temp>=30)
-document.body.style.background="linear-gradient(135deg,#ff9a9e,#fad0c4)";
-else if(temp>=20)
-document.body.style.background="linear-gradient(135deg,#ffe6f7,#fff1b8)";
-else if(temp>=10)
-document.body.style.background="linear-gradient(135deg,#d6e4ff,#e0c3fc)";
-else
-document.body.style.background="linear-gradient(135deg,#cfd9df,#e2ebf0)";
-}
-
-function detectarNoche(sunriseStr,sunsetStr){
-const efectos=document.getElementById("efectos");
-efectos.innerHTML="";
-const ahora=new Date();
-const sunrise=new Date(sunriseStr+"T00:00:00");
-const sunset=new Date(sunsetStr+"T23:59:59");
-
-if(ahora<sunrise||ahora>sunset){
-for(let i=0;i<40;i++){
-const star=document.createElement("div");
-star.className="estrella";
-star.style.left=Math.random()*100+"vw";
-star.style.top=Math.random()*100+"vh";
-efectos.appendChild(star);
-}
-document.body.style.filter="brightness(.85)";
-}else{
-document.body.style.filter="brightness(1)";
-}
-}
-
-function rotarMensajes(temp){
-let mensajes;
-if(temp>=25)
-mensajes=["Energía brillante.","Luz constante.","Calor suave."];
-else if(temp>=15)
-mensajes=["Clima suave.","Todo fluye.","Presencia tranquila."];
-else
-mensajes=["Frío afuera.","Calma interior.","Cuidado constante."];
-
-const el=document.getElementById("mensaje");
-if(intervaloMensajes)clearInterval(intervaloMensajes);
-
-let i=0;
-el.textContent=mensajes[0];
-
-intervaloMensajes=setInterval(()=>{
-el.style.opacity=0;
-setTimeout(()=>{
-i=(i+1)%mensajes.length;
-el.textContent=mensajes[i];
-el.style.opacity=1;
-},300);
-},30000);
-}
-
-iniciarUbicacion();
+getWeather();
 
 </script>
+
 </body>
 </html>
