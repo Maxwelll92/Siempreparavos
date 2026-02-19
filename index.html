@@ -49,19 +49,18 @@ opacity:.8;
 
 #climaVisual{
 height:90px;
-display:flex;
-justify-content:center;
-align-items:center;
-margin:10px 0;
 position:relative;
+margin:10px 0;
 }
 
+/* SOL */
 .sol{
-width:50px;
-height:50px;
+width:55px;
+height:55px;
 background:radial-gradient(circle,#ffd54f,#ff9800);
 border-radius:50%;
-animation:girar 10s linear infinite, brillar 2s ease-in-out infinite alternate;
+margin:auto;
+animation:girar 12s linear infinite, brillar 2s ease-in-out infinite alternate;
 }
 
 @keyframes girar{
@@ -74,17 +73,22 @@ from{box-shadow:0 0 15px #ffcc80;}
 to{box-shadow:0 0 35px #ff9800;}
 }
 
+/* NUBES */
 .nube{
 position:absolute;
 width:70px;
 height:40px;
 background:#ccc;
 border-radius:50px;
+left:50%;
+transform:translateX(-50%);
+top:20px;
 }
 
+/* LLUVIA */
 .lluvia{
 position:absolute;
-top:45px;
+top:60px;
 width:2px;
 height:12px;
 background:#90caf9;
@@ -93,21 +97,23 @@ animation:caer .8s linear infinite;
 
 @keyframes caer{
 from{transform:translateY(0);}
-to{transform:translateY(15px); opacity:0;}
+to{transform:translateY(20px);opacity:0;}
 }
 
+/* NIEVE */
 .copo{
 position:absolute;
-top:40px;
+top:60px;
 font-size:10px;
 animation:nevar 3s linear infinite;
 }
 
 @keyframes nevar{
 from{transform:translateY(0);}
-to{transform:translateY(20px); opacity:0;}
+to{transform:translateY(20px);opacity:0;}
 }
 
+/* VIENTO */
 .vientoIcon{
 display:inline-block;
 margin-left:6px;
@@ -116,8 +122,39 @@ animation:moverViento 2s ease-in-out infinite;
 
 @keyframes moverViento{
 0%{transform:translateX(0);}
-50%{transform:translateX(5px);}
+50%{transform:translateX(6px);}
 100%{transform:translateX(0);}
+}
+
+/* PRONÓSTICO */
+.dias{
+display:flex;
+justify-content:space-between;
+margin-top:18px;
+gap:10px;
+}
+
+.dia{
+flex:1;
+background:rgba(255,255,255,0.6);
+border-radius:18px;
+padding:10px 6px;
+font-size:13px;
+transition:transform .3s ease, background .3s ease;
+}
+
+.dia:hover{
+transform:translateY(-4px);
+background:rgba(255,255,255,0.8);
+}
+
+.dia .icono{
+font-size:22px;
+margin:6px 0;
+}
+
+.min{
+opacity:.6;
 }
 
 .burbuja{
@@ -170,7 +207,7 @@ to{opacity:1;}
 
 <script>
 
-const inicio = new Date("2026-01-30");
+const inicio=new Date("2026-01-30");
 
 function actualizarContador(){
 const hoy=new Date();
@@ -181,14 +218,8 @@ return;
 let años=hoy.getFullYear()-inicio.getFullYear();
 let meses=hoy.getMonth()-inicio.getMonth();
 let dias=hoy.getDate()-inicio.getDate();
-if(dias<0){
-meses--;
-dias+=new Date(hoy.getFullYear(),hoy.getMonth(),0).getDate();
-}
-if(meses<0){
-años--;
-meses+=12;
-}
+if(dias<0){meses--;dias+=new Date(hoy.getFullYear(),hoy.getMonth(),0).getDate();}
+if(meses<0){años--;meses+=12;}
 document.getElementById("contador").textContent=
 `${años} años • ${meses} meses • ${dias} días contigo`;
 }
@@ -209,28 +240,57 @@ setInterval(obtenerClima,1800000);
 async function obtenerClima(){
 try{
 const res=await fetch(
-`https://api.open-meteo.com/v1/forecast?latitude=${latGlobal}&longitude=${lonGlobal}&current_weather=true&hourly=apparent_temperature&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&forecast_days=4&timezone=auto`
+`https://api.open-meteo.com/v1/forecast?latitude=${latGlobal}&longitude=${lonGlobal}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&forecast_days=4&timezone=auto`
 );
 const data=await res.json();
 
 const current=data.current_weather;
-const hourly=data.hourly;
+const daily=data.daily;
 
 const temp=Math.round(current.temperature);
 const viento=Math.round(current.windspeed);
-const sensacion=Math.round(hourly.apparent_temperature[0]);
 
-document.getElementById("temperatura").textContent=`Temperatura actual: ${temp}°C`;
+document.getElementById("temperatura").textContent=
+`Temperatura actual: ${temp}°C`;
+
 document.getElementById("sensacion").innerHTML=
-`Sensación térmica: ${sensacion}°C 
+`Sensación térmica: ${temp}°C 
 <span class="vientoIcon">🌬️ ${viento} km/h</span>`;
 
 renderClimaVisual(current.weathercode);
+
+/* HOY */
+const minHoy=Math.round(daily.temperature_2m_min[0]);
+const maxHoy=Math.round(daily.temperature_2m_max[0]);
+document.getElementById("minmaxHoy").textContent=
+`Hoy: mínima ${minHoy}°C • máxima ${maxHoy}°C`;
+
+/* 3 DÍAS */
+let html="";
+for(let i=1;i<=3;i++){
+const fecha=new Date(daily.time[i]+"T00:00:00");
+const nombreDia=fecha.toLocaleDateString("es-ES",{weekday:"short"});
+const min=Math.round(daily.temperature_2m_min[i]);
+const max=Math.round(daily.temperature_2m_max[i]);
+const icono=obtenerIcono(daily.weathercode[i]);
+
+html+=`
+<div class="dia">
+<div>${nombreDia}</div>
+<div class="icono">${icono}</div>
+<div>${max}°</div>
+<div class="min">${min}°</div>
+</div>
+`;
+}
+document.getElementById("pronosticoDias").innerHTML=html;
+
 cambiarFondo(temp);
-detectarNoche(data.daily.sunrise[0],data.daily.sunset[0]);
+detectarNoche(daily.sunrise[0],daily.sunset[0]);
 rotarMensajes(temp);
 
 }catch(e){
+console.log(e);
 document.getElementById("mensaje").textContent=
 "No pude actualizar el clima, pero sigo aquí 💗";
 }
@@ -248,7 +308,7 @@ cont.innerHTML=`<div class="nube"></div>`;
 for(let i=0;i<8;i++){
 const drop=document.createElement("div");
 drop.className="lluvia";
-drop.style.left=(20+i*6)+"px";
+drop.style.left=(35+i*4)+"px";
 cont.appendChild(drop);
 }
 }
@@ -257,7 +317,7 @@ cont.innerHTML=`<div class="nube"></div>`;
 for(let i=0;i<6;i++){
 const snow=document.createElement("div");
 snow.className="copo";
-snow.style.left=(20+i*8)+"px";
+snow.style.left=(35+i*5)+"px";
 snow.textContent="❄";
 cont.appendChild(snow);
 }
@@ -265,6 +325,17 @@ cont.appendChild(snow);
 else{
 cont.innerHTML=`<div class="nube"></div>`;
 }
+}
+
+function obtenerIcono(code){
+if(code===0) return "☀️";
+if(code>=1&&code<=3) return "⛅";
+if(code>=45&&code<=48) return "🌫️";
+if(code>=51&&code<=67) return "🌧️";
+if(code>=71&&code<=77) return "❄️";
+if(code>=80&&code<=82) return "🌦️";
+if(code>=95) return "⛈️";
+return "🌤️";
 }
 
 function cambiarFondo(temp){
